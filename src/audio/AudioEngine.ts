@@ -35,6 +35,7 @@ export class AudioEngine {
         await Tone.loaded();
         await Tone.start();
 
+        Tone.Transport.bpm.value = 96;
         Tone.Transport.loopStart = 0;
         Tone.Transport.loopEnd = "2m";
         Tone.Transport.loop = true;
