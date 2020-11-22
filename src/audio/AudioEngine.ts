@@ -1,82 +1,91 @@
-import { BufferLoader } from "./BufferLoader";
-import { Sample } from "./Sample";
-import { Sampler } from "./Sampler";
+import { Config } from "./Config";
+import { SampleTrack } from "./SampleTrack";
+import * as Tone from "tone";
+import { AudioState, TransportStatusEnum } from "./AudioState";
 
 export class AudioEngine {
-    private sampler: Sampler;
-    private readonly context: AudioContext;
+    public readonly tracks: Map<string, SampleTrack> = new Map<
+        string,
+        SampleTrack
+    >();
+    private initialized: boolean = false;
+    private drawCallback?: (state: AudioState) => void;
+    public readonly state: AudioState;
 
-    constructor() {
-        this.context = new AudioContext();
+    constructor(private readonly config: Config) {
+        this.state = {
+            transportStatus: TransportStatusEnum.Stopped,
+            transportPosition: 0,
+        };
+    }
 
-        window.requestAnimationFrame = (function () {
-            return (
-                window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                function (callback) {
-                    window.setTimeout(callback, 1000 / 60);
-                }
+    public async init() {
+        for (const trackData of this.config.trackData) {
+            const track = new SampleTrack(
+                trackData.id,
+                trackData.name,
+                trackData.sample,
+                trackData.sequenceNotes
             );
-        })();
 
-        this.context = new AudioContext();
-        this.sampler = new Sampler(this.context);
+            track.player.toDestination();
+
+            this.tracks.set(trackData.id, track);
+        }
+        await Tone.loaded();
+        await Tone.start();
+
+        Tone.Transport.loopStart = 0;
+        Tone.Transport.loopEnd = "2m";
+        Tone.Transport.loop = true;
+
+        new Tone.Sequence(
+            (time, index) => {
+                this.state.transportPosition = index;
+
+                Tone.Draw.schedule(() => {
+                    if (this.drawCallback) {
+                        this.drawCallback(this.state);
+                    }
+                }, time);
+            },
+            AudioEngine.arrayIndexes(this.config.sequenceSteps),
+            "8n"
+        ).start(0);
+
+        this.initialized = true;
     }
 
-    public async load(): Promise<void> {
-        const samples = new Map();
+    private static arrayIndexes(length: number): Array<number> {
+        const result = [];
 
-        samples.set("snare", "assets/snare.wav");
-        samples.set("hh", "assets/hihat.wav");
-        samples.set("kick", "assets/kick.wav");
-
-        const context = new AudioContext();
-
-        const bufferLoader = new BufferLoader(context, samples);
-
-        const buffers = await bufferLoader.load();
-
-        const snareBuffer = buffers.get("snare");
-
-        if (snareBuffer) {
-            const snare = new Sample(context, snareBuffer);
-
-            this.sampler.addSample(snare, [
-                [3, 7],
-                [3, 7],
-                [6, 7],
-                [3, 7],
-            ]);
+        for (let i = 0; i < length; i++) {
+            result.push(i);
         }
 
-        const kickBuffer = buffers.get("kick");
-
-        if (kickBuffer) {
-            const kick = new Sample(context, kickBuffer);
-
-            this.sampler.addSample(kick, [
-                [1, 5],
-                [1, 5],
-                [1, 2, 3, 5],
-                [1, 5, 6],
-            ]);
-        }
-
-        const hihatBuffer = buffers.get("hh");
-
-        if (hihatBuffer) {
-            const hihat = new Sample(context, hihatBuffer);
-
-            this.sampler.addSample(hihat, [
-                [1, 2, 3, 4, 5, 6, 7, 8],
-                [1, 2, 3, 4, 5, 6, 7, 8],
-                [],
-                [1, 2, 3, 4, 5, 6, 7, 8],
-            ]);
-        }
+        return result;
     }
 
-    public start(): void {
-        this.sampler.play(0);
+    public setDrawCallback(callback: (state: AudioState) => void) {
+        this.drawCallback = callback;
+    }
+
+    public startTransport() {
+        Tone.Transport.start();
+
+        this.state.transportStatus = TransportStatusEnum.Started;
+    }
+
+    public pauseTransport(): void {
+        Tone.Transport.pause();
+
+        this.state.transportStatus = TransportStatusEnum.Paused;
+    }
+
+    public stopTransport(): void {
+        Tone.Transport.stop();
+
+        this.state.transportPosition = 0;
+        this.state.transportStatus = TransportStatusEnum.Stopped;
     }
 }

@@ -1,0 +1,18 @@
+.active-note {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.inactive-note {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.inactive-note.current-note {
+    background-color: rgba(128, 128, 128, 1);
+}
+
+.active-note.current-note {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+table { table-layout:fixed; }
+table td { overflow: hidden; }

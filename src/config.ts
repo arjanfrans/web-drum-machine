@@ -1,0 +1,53 @@
+import { Config } from "./audio/Config";
+
+export const CONFIG: Config = {
+    sequenceSteps: 16,
+    trackData: [
+        {
+            id: "kick",
+            name: "Kick",
+            sample: "assets/kick.wav",
+            sequenceNotes: [
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+            ],
+        },
+        {
+            id: "snare",
+            name: "Snare",
+            sample: "assets/snare.wav",
+            sequenceNotes: [
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+            ],
+        },
+    ],
+};

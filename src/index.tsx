@@ -1,33 +1,73 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import {TransportView} from "./ui/audio/TransportView";
 import {AudioEngine} from "./audio/AudioEngine";
+import {CONFIG} from "./config";
+import {AudioState} from "./audio/AudioState";
 
-export class Jukebox extends React.Component<{}, {}>{
-    private audioEngine = new AudioEngine();
+interface JukeboxState {
+    audioState: AudioState
+    isReady: boolean
+}
 
-    public async componentDidMount(): Promise<void>
-    {
-        await this.audioEngine.load()
+export class Jukebox extends React.Component<{}, JukeboxState> {
+    private readonly engine: AudioEngine;
+
+    constructor(props: {}) {
+        super(props);
+
+        this.engine = new AudioEngine(CONFIG);
+
+        this.state = {
+            audioState: this.engine.state,
+            isReady: false
+        }
+
     }
 
-    private handleStartClick(): void
+    private async startEngine()
     {
-        this.audioEngine.start();
-        console.log('click')
+        await this.engine.init();
+
+        this.setState({
+            isReady: true
+        })
+
+        this.engine.setDrawCallback((state) => {
+            this.setState({
+                audioState: {
+                    ...state
+                }
+            })
+        })
     }
 
-    public render(): React.ReactNode
+    private renderStart(): React.ReactNode
     {
-        return <button onClick={() => this.handleStartClick()}>Start</button>
+        return <div>
+           <button onClick={() => this.startEngine()}>Start making music!</button>
+        </div>
+    }
+
+    public render(): React.ReactNode {
+        if (!this.state.isReady) {
+            return this.renderStart();
+        }
+
+        return <>
+            <TransportView
+                audioState={this.state.audioState}
+                engine={this.engine}
+            />
+        </>
     }
 }
 
-
 ReactDOM.render(
-  <React.StrictMode>
-    <Jukebox />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Jukebox/>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
