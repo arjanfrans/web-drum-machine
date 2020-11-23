@@ -33,14 +33,6 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
         this.setState({
             isReady: true
         })
-
-        this.engine.setDrawCallback((state) => {
-            this.setState({
-                audioState: {
-                    ...state
-                }
-            })
-        })
     }
 
     private renderStart(): React.ReactNode
@@ -57,7 +49,6 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
 
         return <>
             <TransportView
-                audioState={this.state.audioState}
                 engine={this.engine}
             />
         </>

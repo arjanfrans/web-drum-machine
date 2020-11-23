@@ -2,6 +2,8 @@ import { Config } from "./Config";
 import { SampleTrack } from "./SampleTrack";
 import * as Tone from "tone";
 import { AudioState, TransportStatusEnum } from "./AudioState";
+import { EventEmitter } from "../events/EventEmitter";
+import { TransportPositionUpdatedEvent } from "../events/TransportPositionUpdatedEvent";
 
 export class AudioEngine {
     public readonly tracks: Map<string, SampleTrack> = new Map<
@@ -10,6 +12,7 @@ export class AudioEngine {
     >();
     private initialized: boolean = false;
     private drawCallback?: (state: AudioState) => void;
+    public readonly emitter: EventEmitter = new EventEmitter();
     public readonly state: AudioState;
 
     constructor(private readonly config: Config) {
@@ -45,9 +48,7 @@ export class AudioEngine {
                 this.state.transportPosition = index;
 
                 Tone.Draw.schedule(() => {
-                    if (this.drawCallback) {
-                        this.drawCallback(this.state);
-                    }
+                    this.emitter.emit(new TransportPositionUpdatedEvent(index));
                 }, time);
             },
             AudioEngine.arrayIndexes(this.config.sequenceSteps),

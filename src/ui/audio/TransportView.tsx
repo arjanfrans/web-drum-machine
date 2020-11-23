@@ -2,14 +2,38 @@ import React from "react";
 import {TrackView} from "./TrackView";
 import {TransportControlView} from "./TransportControlView";
 import {AudioEngine} from "../../audio/AudioEngine";
-import {AudioState} from "../../audio/AudioState";
+import {TrackEvent} from "../../events/TrackEvent";
+import {TransportPositionUpdatedEvent} from "../../events/TransportPositionUpdatedEvent";
 
 interface TransportViewProps {
     engine: AudioEngine
-    audioState: AudioState
 }
 
-export class TransportView extends React.Component<TransportViewProps, {}> {
+interface TransportViewState {
+    transportPosition: number
+}
+
+export class TransportView extends React.Component<TransportViewProps, TransportViewState> {
+    constructor(props: TransportViewProps) {
+        super(props);
+
+        this.state = {
+            transportPosition: 0
+        }
+    }
+
+    public componentDidMount() {
+        this.props.engine.emitter.on(TrackEvent, (event: TrackEvent) => {
+            this.forceUpdate();
+        })
+
+        this.props.engine.emitter.on(TransportPositionUpdatedEvent, (event: TransportPositionUpdatedEvent) => {
+            this.setState({
+                transportPosition: event.transportPosition
+            })
+        })
+    }
+
     private handleToggleNote(trackId: string, noteIndex: number, isActive: boolean) {
         const track = this.props.engine.tracks.get(trackId);
 
@@ -24,8 +48,8 @@ export class TransportView extends React.Component<TransportViewProps, {}> {
         const trackViews = [];
         for (const [id, track] of this.props.engine.tracks.entries()) {
             trackViews.push(
-                <TrackView key={id} id={id} name={track.name} sequenceNotes={track.sequenceNotes}
-                           transportPosition={this.props.audioState.transportPosition}
+                <TrackView key={id} track={track}
+                           transportPosition={this.state.transportPosition}
                            onToggleNote={this.handleToggleNote.bind(this)}
                 />
             );
