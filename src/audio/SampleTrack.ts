@@ -1,11 +1,15 @@
 import * as Tone from "tone";
 import { EventEmitter } from "../events/EventEmitter";
 import { TrackEvent } from "../events/TrackEvent";
+import { UpdateChannelVolumeEvent } from "../events/UpdateChannelVolumeEvent";
+import { SoloChannelEvent } from "../events/SoloChannelEvent";
+import { MuteChannelEvent } from "../events/MuteChannelEvent";
 
 export class SampleTrack {
     public readonly player: Tone.Player;
     private sequence?: Tone.Sequence;
     public readonly emitter: EventEmitter = new EventEmitter();
+    public readonly channel: Tone.Channel;
 
     constructor(
         public readonly id: string,
@@ -14,7 +18,32 @@ export class SampleTrack {
         public readonly sequenceNotes: boolean[]
     ) {
         this.player = new Tone.Player(sample);
+        this.channel = new Tone.Channel(-6, 0);
+        this.player.connect(this.channel);
+        this.channel.toDestination();
+
         this.updateSequence();
+
+        this.emitter.on(
+            UpdateChannelVolumeEvent,
+            (event: UpdateChannelVolumeEvent) => {
+                this.channel.volume.value = event.volume;
+
+                this.emitter.emit(new TrackEvent(this));
+            }
+        );
+
+        this.emitter.on(SoloChannelEvent, (event: SoloChannelEvent) => {
+            this.channel.solo = event.solo;
+
+            this.emitter.emit(new TrackEvent(this));
+        });
+
+        this.emitter.on(MuteChannelEvent, (event: MuteChannelEvent) => {
+            this.channel.mute = event.mute;
+
+            this.emitter.emit(new TrackEvent(this));
+        });
     }
 
     public updateSequenceNote(index: number, value: boolean): void {

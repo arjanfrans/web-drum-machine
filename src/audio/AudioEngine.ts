@@ -31,8 +31,6 @@ export class AudioEngine {
                 trackData.sequenceNotes
             );
 
-            track.player.toDestination();
-
             this.tracks.set(trackData.id, track);
         }
         await Tone.loaded();

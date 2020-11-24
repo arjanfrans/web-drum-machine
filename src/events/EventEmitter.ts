@@ -3,7 +3,7 @@ import { EventEmitter as BaseEventEmitter } from "events";
 export class EventEmitter {
     private emitter = new BaseEventEmitter();
 
-    public on(event: any, listener: (...args: any[]) => void): this {
+    public on(event: Function, listener: (...args: any[]) => void): this {
         this.emitter.on(event.name, listener);
 
         return this;
@@ -13,8 +13,8 @@ export class EventEmitter {
         this.emitter.emit(event.constructor.name, event);
     }
 
-    public off(event: any, listener: (...args: any[]) => void): this {
-        this.emitter.off(event, listener);
+    public off(event: Function, listener: (...args: any[]) => void): this {
+        this.emitter.off(event.name, listener);
 
         return this;
     }

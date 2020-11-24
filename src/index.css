@@ -14,5 +14,37 @@
     background-color: rgba(255, 0, 0, 1);
 }
 
-table { table-layout:fixed; }
-table td { overflow: hidden; }
+.mute-button {
+}
+
+.unmute-button {
+    background-color: goldenrod;
+}
+
+.solo-button {
+}
+
+.unsolo-button {
+    background-color: darkred;
+}
+
+table {
+    table-layout: fixed;
+    max-width:100%;
+    white-space:nowrap;
+}
+
+table td {
+    overflow: visible;
+    width: 100%;
+}
+
+tr td:first-child {
+    width: 250px;
+}
+
+tr td:last-child{
+    width:1%;
+    white-space:nowrap;
+}
+
