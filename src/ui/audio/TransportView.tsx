@@ -2,7 +2,7 @@ import React from "react";
 import {TrackView} from "./TrackView";
 import {TransportControlView} from "./TransportControlView";
 import {AudioEngine} from "../../audio/AudioEngine";
-import {TrackEvent} from "../../events/TrackEvent";
+import {TrackEvent} from "../../events/track/TrackEvent";
 import {TransportPositionUpdatedEvent} from "../../events/TransportPositionUpdatedEvent";
 
 interface TransportViewProps {

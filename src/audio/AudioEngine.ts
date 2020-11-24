@@ -4,12 +4,12 @@ import * as Tone from "tone";
 import { AudioState, TransportStatusEnum } from "./AudioState";
 import { EventEmitter } from "../events/EventEmitter";
 import { TransportPositionUpdatedEvent } from "../events/TransportPositionUpdatedEvent";
+import { StopTransportEvent } from "../events/transport/StopTransportEvent";
+import { StartTransportEvent } from "../events/transport/StartTransportEvent";
+import { PauseTransportEvent } from "../events/transport/PauseTransportEvent";
 
 export class AudioEngine {
-    public readonly tracks: Map<string, SampleTrack> = new Map<
-        string,
-        SampleTrack
-    >();
+    public readonly tracks: Map<string, SampleTrack> = new Map<string, SampleTrack>();
     private initialized: boolean = false;
     private drawCallback?: (state: AudioState) => void;
     public readonly emitter: EventEmitter = new EventEmitter();
@@ -20,16 +20,26 @@ export class AudioEngine {
             transportStatus: TransportStatusEnum.Stopped,
             transportPosition: 0,
         };
+
+        this.emitter.on(StopTransportEvent, () => {
+            this.state.transportStatus = TransportStatusEnum.Stopped;
+
+            this.emitter.emit(new TransportPositionUpdatedEvent(0));
+            Tone.Transport.stop();
+        });
+        this.emitter.on(StartTransportEvent, () => {
+            this.state.transportStatus = TransportStatusEnum.Started;
+            Tone.Transport.start();
+        });
+        this.emitter.on(PauseTransportEvent, () => {
+            this.state.transportStatus = TransportStatusEnum.Paused;
+            Tone.Transport.pause();
+        });
     }
 
     public async init() {
         for (const trackData of this.config.trackData) {
-            const track = new SampleTrack(
-                trackData.id,
-                trackData.name,
-                trackData.sample,
-                trackData.sequenceNotes
-            );
+            const track = new SampleTrack(trackData.id, trackData.name, trackData.sample, trackData.sequenceNotes);
 
             this.tracks.set(trackData.id, track);
         }
@@ -46,7 +56,9 @@ export class AudioEngine {
                 this.state.transportPosition = index;
 
                 Tone.Draw.schedule(() => {
-                    this.emitter.emit(new TransportPositionUpdatedEvent(index));
+                    if (this.state.transportStatus === TransportStatusEnum.Started) {
+                        this.emitter.emit(new TransportPositionUpdatedEvent(index));
+                    }
                 }, time);
             },
             AudioEngine.arrayIndexes(this.config.sequenceSteps),
@@ -68,24 +80,5 @@ export class AudioEngine {
 
     public setDrawCallback(callback: (state: AudioState) => void) {
         this.drawCallback = callback;
-    }
-
-    public startTransport() {
-        Tone.Transport.start();
-
-        this.state.transportStatus = TransportStatusEnum.Started;
-    }
-
-    public pauseTransport(): void {
-        Tone.Transport.pause();
-
-        this.state.transportStatus = TransportStatusEnum.Paused;
-    }
-
-    public stopTransport(): void {
-        Tone.Transport.stop();
-
-        this.state.transportPosition = 0;
-        this.state.transportStatus = TransportStatusEnum.Stopped;
     }
 }

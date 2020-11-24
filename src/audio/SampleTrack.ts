@@ -1,9 +1,9 @@
 import * as Tone from "tone";
 import { EventEmitter } from "../events/EventEmitter";
-import { TrackEvent } from "../events/TrackEvent";
-import { UpdateChannelVolumeEvent } from "../events/UpdateChannelVolumeEvent";
-import { SoloChannelEvent } from "../events/SoloChannelEvent";
-import { MuteChannelEvent } from "../events/MuteChannelEvent";
+import { TrackEvent } from "../events/track/TrackEvent";
+import { UpdateChannelVolumeEvent } from "../events/track/UpdateChannelVolumeEvent";
+import { SoloChannelEvent } from "../events/track/SoloChannelEvent";
+import { MuteChannelEvent } from "../events/track/MuteChannelEvent";
 
 export class SampleTrack {
     public readonly player: Tone.Player;
@@ -24,14 +24,11 @@ export class SampleTrack {
 
         this.updateSequence();
 
-        this.emitter.on(
-            UpdateChannelVolumeEvent,
-            (event: UpdateChannelVolumeEvent) => {
-                this.channel.volume.value = event.volume;
+        this.emitter.on(UpdateChannelVolumeEvent, (event: UpdateChannelVolumeEvent) => {
+            this.channel.volume.value = event.volume;
 
-                this.emitter.emit(new TrackEvent(this));
-            }
-        );
+            this.emitter.emit(new TrackEvent(this));
+        });
 
         this.emitter.on(SoloChannelEvent, (event: SoloChannelEvent) => {
             this.channel.solo = event.solo;

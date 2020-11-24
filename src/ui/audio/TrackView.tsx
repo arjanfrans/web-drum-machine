@@ -1,8 +1,8 @@
 import React from "react";
 import {SampleTrack} from "../../audio/SampleTrack";
-import {UpdateChannelVolumeEvent} from "../../events/UpdateChannelVolumeEvent";
-import {SoloChannelEvent} from "../../events/SoloChannelEvent";
-import {MuteChannelEvent} from "../../events/MuteChannelEvent";
+import {UpdateChannelVolumeEvent} from "../../events/track/UpdateChannelVolumeEvent";
+import {SoloChannelEvent} from "../../events/track/SoloChannelEvent";
+import {MuteChannelEvent} from "../../events/track/MuteChannelEvent";
 
 interface TrackViewProps {
     track: SampleTrack
