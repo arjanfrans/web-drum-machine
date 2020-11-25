@@ -1,1 +1,3 @@
-export class PauseTransportEvent {}
+export class PauseTransportEvent {
+    public static Name: string = "PauseTransportEvent";
+}

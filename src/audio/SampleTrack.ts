@@ -4,6 +4,7 @@ import { TrackEvent } from "../events/track/TrackEvent";
 import { UpdateChannelVolumeEvent } from "../events/track/UpdateChannelVolumeEvent";
 import { SoloChannelEvent } from "../events/track/SoloChannelEvent";
 import { MuteChannelEvent } from "../events/track/MuteChannelEvent";
+import { UpdateChannelPanningEvent } from "../events/track/UpdatePanningVolumeEvent";
 
 export class SampleTrack {
     public readonly player: Tone.Player;
@@ -26,8 +27,10 @@ export class SampleTrack {
 
         this.emitter.on(UpdateChannelVolumeEvent, (event: UpdateChannelVolumeEvent) => {
             this.channel.volume.value = event.volume;
+        });
 
-            this.emitter.emit(new TrackEvent(this));
+        this.emitter.on(UpdateChannelPanningEvent, (event: UpdateChannelPanningEvent) => {
+            this.channel.pan.value = event.pan;
         });
 
         this.emitter.on(SoloChannelEvent, (event: SoloChannelEvent) => {

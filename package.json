@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:production": "npm run build && npx serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
