@@ -58,6 +58,8 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
 ReactDOM.render(
     <React.StrictMode>
         <Jukebox/>
+        <hr/>
+        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-sampler">Source Code</a>
     </React.StrictMode>,
     document.getElementById('root')
 );

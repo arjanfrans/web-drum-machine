@@ -5,12 +5,16 @@ import { UpdateChannelVolumeEvent } from "../events/track/UpdateChannelVolumeEve
 import { SoloChannelEvent } from "../events/track/SoloChannelEvent";
 import { MuteChannelEvent } from "../events/track/MuteChannelEvent";
 import { UpdateChannelPanningEvent } from "../events/track/UpdatePanningVolumeEvent";
+import { SetChannelReverbEvent } from "../events/track/SetChannelReverbEvent";
+import { SetChannelChorusEvent } from "../events/track/SetChannelChorusEvent";
+import { EffectsRack } from "./EffectsRack";
 
 export class SampleTrack {
     public readonly player: Tone.Player;
     private sequence?: Tone.Sequence;
     public readonly emitter: EventEmitter = new EventEmitter();
     public readonly channel: Tone.Channel;
+    public readonly effectsRack: EffectsRack;
 
     constructor(
         public readonly id: string,
@@ -20,7 +24,26 @@ export class SampleTrack {
     ) {
         this.player = new Tone.Player(sample);
         this.channel = new Tone.Channel(-6, 0);
+        this.effectsRack = new EffectsRack(this.player, this.channel);
+
         this.player.connect(this.channel);
+
+        const reverb = new Tone.Reverb({
+            wet: 0.5,
+            preDelay: 0.2,
+        });
+        const chorus = new Tone.Chorus({
+            depth: 0.4,
+            spread: 0.2,
+            feedback: 0.1,
+            wet: 0.5,
+        });
+
+        this.effectsRack.add("chorus", chorus);
+        this.effectsRack.add("reverb", reverb, "chorus");
+        this.effectsRack.disableEffect("chorus");
+        this.effectsRack.disableEffect("reverb");
+
         this.channel.toDestination();
 
         this.updateSequence();
@@ -43,6 +66,22 @@ export class SampleTrack {
             this.channel.mute = event.mute;
 
             this.emitter.emit(new TrackEvent(this));
+        });
+
+        this.emitter.on(SetChannelReverbEvent, (event: SetChannelReverbEvent) => {
+            if (event.enable) {
+                this.effectsRack.enableEffect("reverb");
+            } else {
+                this.effectsRack.disableEffect("reverb");
+            }
+        });
+
+        this.emitter.on(SetChannelChorusEvent, (event: SetChannelChorusEvent) => {
+            if (event.enable) {
+                this.effectsRack.enableEffect("chorus");
+            } else {
+                this.effectsRack.disableEffect("chorus");
+            }
         });
     }
 

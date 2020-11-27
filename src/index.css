@@ -28,6 +28,22 @@
     background-color: darkred;
 }
 
+
+.inactive-reverb-button {
+}
+
+.active-reverb-button {
+    background-color: darkgreen;
+}
+
+
+.inactive-chorus-button {
+}
+
+.active-chorus-button {
+    background-color: cyan;
+}
+
 table {
     table-layout: fixed;
     max-width:100%;

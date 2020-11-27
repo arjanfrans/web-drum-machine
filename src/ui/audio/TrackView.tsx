@@ -4,6 +4,8 @@ import {UpdateChannelVolumeEvent} from "../../events/track/UpdateChannelVolumeEv
 import {SoloChannelEvent} from "../../events/track/SoloChannelEvent";
 import {MuteChannelEvent} from "../../events/track/MuteChannelEvent";
 import {UpdateChannelPanningEvent} from "../../events/track/UpdatePanningVolumeEvent";
+import {SetChannelReverbEvent} from "../../events/track/SetChannelReverbEvent";
+import {SetChannelChorusEvent} from "../../events/track/SetChannelChorusEvent";
 
 interface TrackViewProps {
     track: SampleTrack
@@ -17,6 +19,8 @@ interface TrackViewState {
     pan: number;
     solo: boolean
     mute: boolean
+    enableReverb: boolean
+    enableChorus: boolean
 }
 
 export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
@@ -27,7 +31,9 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             pan: props.track.channel.pan.value,
             volume: props.track.channel.volume.value,
             solo: props.track.channel.solo,
-            mute: props.track.channel.mute
+            mute: props.track.channel.mute,
+            enableReverb: false,
+            enableChorus: false
         }
     }
 
@@ -46,11 +52,10 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             const volume = Number.parseInt(event.currentTarget.value);
 
             if (volume !== track.channel.volume.value) {
+                track.emitter.emit(new UpdateChannelVolumeEvent(volume));
                 this.setState({
                     volume
                 })
-
-                track.emitter.emit(new UpdateChannelVolumeEvent(volume));
             }
         }
 
@@ -58,28 +63,42 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             const pan = Number.parseFloat(event.currentTarget.value);
 
             if (pan !== track.channel.pan.value) {
+                track.emitter.emit(new UpdateChannelPanningEvent(pan));
                 this.setState({
                     pan
                 })
-
-                track.emitter.emit(new UpdateChannelPanningEvent(pan));
             }
         }
 
         const soloChannel = () => {
+            track.emitter.emit(new SoloChannelEvent(!track.channel.solo));
             this.setState({
                 solo: !this.state.solo
             })
-
-            track.emitter.emit(new SoloChannelEvent(!track.channel.solo));
         }
 
         const muteChannel = () => {
+            track.emitter.emit(new MuteChannelEvent(!track.channel.mute));
+
             this.setState({
                 mute: !this.state.mute
             });
+        }
 
-            track.emitter.emit(new MuteChannelEvent(!track.channel.mute));
+        const enableReverb = () => {
+            track.emitter.emit(new SetChannelReverbEvent(!this.state.enableReverb));
+
+            this.setState({
+                enableReverb: !this.state.enableReverb
+            });
+        }
+
+        const enableChorus = () => {
+            track.emitter.emit(new SetChannelChorusEvent(!this.state.enableChorus));
+
+            this.setState({
+                enableChorus: !this.state.enableChorus
+            });
         }
 
         return (
@@ -95,10 +114,10 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
                                       value={this.state.pan}/>
                               </span>
 
-                            <button onMouseUp={muteChannel}
+                            <button onClick={muteChannel}
                                     className={this.state.mute ? "unmute-button" : "mute-button"}>Mute
                             </button>
-                            <button onMouseUp={soloChannel}
+                            <button onClick={soloChannel}
                                     className={this.state.solo ? "unsolo-button" : "solo-button"}>Solo
                             </button>
                         </div>
@@ -113,6 +132,18 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
                         </div>
                     </td>
                     {columns}
+                    <td style={{width: '100px'}}>
+                        <span title={"Reverb"}>
+                            <button onClick={enableReverb}
+                                    className={this.state.enableReverb ? "active-reverb-button" : "inactive-reverb-button"}>Rvb
+                            </button>
+                        </span>
+                        <span title={"Chorus"}>
+                            <button onClick={enableChorus}
+                                    className={this.state.enableChorus ? "active-chorus-button" : "inactive-chorus-button"}>Chr
+                            </button>
+                        </span>
+                    </td>
                 </tr>
             </>)
             ;
