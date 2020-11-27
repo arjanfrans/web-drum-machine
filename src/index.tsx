@@ -4,34 +4,30 @@ import './index.css';
 import {TransportView} from "./ui/audio/TransportView";
 import {AudioEngine} from "./audio/AudioEngine";
 import {CONFIG} from "./config";
-import {AudioState} from "./audio/AudioState";
 
 interface JukeboxState {
-    audioState: AudioState
-    isReady: boolean
+    engine: AudioEngine|null
 }
 
 export class Jukebox extends React.Component<{}, JukeboxState> {
-    private readonly engine: AudioEngine;
+    private engine?: AudioEngine;
 
     constructor(props: {}) {
         super(props);
 
-        this.engine = new AudioEngine(CONFIG);
-
         this.state = {
-            audioState: this.engine.state,
-            isReady: false
+            engine: null
         }
 
     }
 
     private async startEngine()
     {
-        await this.engine.init();
+        const engine = new AudioEngine(CONFIG);
+        await engine.init();
 
         this.setState({
-            isReady: true
+            engine
         })
     }
 
@@ -43,13 +39,14 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
     }
 
     public render(): React.ReactNode {
-        if (!this.state.isReady) {
+        if (!this.state.engine) {
             return this.renderStart();
         }
 
         return <>
             <TransportView
-                engine={this.engine}
+                transport={this.state.engine.transport}
+                tracks={[...this.state.engine.tracks.values()]}
             />
         </>
     }

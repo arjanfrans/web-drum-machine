@@ -8,6 +8,7 @@ import { UpdateChannelPanningEvent } from "../events/track/UpdatePanningVolumeEv
 import { SetChannelReverbEvent } from "../events/track/SetChannelReverbEvent";
 import { SetChannelChorusEvent } from "../events/track/SetChannelChorusEvent";
 import { EffectsRack } from "./EffectsRack";
+import { SetTrackNoteEvent } from "../events/track/SetTrackNoteEvent";
 
 export class SampleTrack {
     public readonly player: Tone.Player;
@@ -29,14 +30,14 @@ export class SampleTrack {
         this.player.connect(this.channel);
 
         const reverb = new Tone.Reverb({
-            wet: 0.5,
-            preDelay: 0.2,
+            wet: 0.3,
+            preDelay: 0.01,
         });
         const chorus = new Tone.Chorus({
             depth: 0.4,
-            spread: 0.2,
-            feedback: 0.1,
-            wet: 0.5,
+            spread: 0.4,
+            feedback: 0.4,
+            wet: 0.7,
         });
 
         this.effectsRack.add("chorus", chorus);
@@ -47,6 +48,12 @@ export class SampleTrack {
         this.channel.toDestination();
 
         this.updateSequence();
+
+        this.emitter.on(SetTrackNoteEvent, (event: SetTrackNoteEvent) => {
+            this.sequenceNotes[event.index] = event.isActive;
+
+            this.emitter.emit(new TrackEvent(this));
+        });
 
         this.emitter.on(UpdateChannelVolumeEvent, (event: UpdateChannelVolumeEvent) => {
             this.channel.volume.value = event.volume;
@@ -83,12 +90,6 @@ export class SampleTrack {
                 this.effectsRack.disableEffect("chorus");
             }
         });
-    }
-
-    public updateSequenceNote(index: number, value: boolean): void {
-        this.sequenceNotes[index] = value;
-
-        this.emitter.emit(new TrackEvent(this));
     }
 
     private updateSequence(): void {

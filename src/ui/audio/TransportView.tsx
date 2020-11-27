@@ -1,12 +1,14 @@
 import React from "react";
 import {TrackView} from "./TrackView";
 import {TransportControlView} from "./TransportControlView";
-import {AudioEngine} from "../../audio/AudioEngine";
-import {TrackEvent} from "../../events/track/TrackEvent";
-import {TransportPositionUpdatedEvent} from "../../events/TransportPositionUpdatedEvent";
+import {TransportPositionUpdatedEvent} from "../../events/transport/TransportPositionUpdatedEvent";
+import {Transport} from "../../audio/Transport"
+import {SampleTrack} from "../../audio/SampleTrack";
+import {SetTrackNoteEvent} from "../../events/track/SetTrackNoteEvent";
 
 interface TransportViewProps {
-    engine: AudioEngine
+    transport: Transport
+    tracks: SampleTrack[]
 }
 
 interface TransportViewState {
@@ -23,41 +25,32 @@ export class TransportView extends React.Component<TransportViewProps, Transport
     }
 
     public componentDidMount() {
-        this.props.engine.emitter.on(TrackEvent, (event: TrackEvent) => {
-            this.forceUpdate();
-        })
-
-        this.props.engine.emitter.on(TransportPositionUpdatedEvent, (event: TransportPositionUpdatedEvent) => {
+        this.props.transport.emitter.on(TransportPositionUpdatedEvent, (event: TransportPositionUpdatedEvent) => {
             this.setState({
                 transportPosition: event.transportPosition
             })
         })
     }
 
-    private handleToggleNote(trackId: string, noteIndex: number, isActive: boolean) {
-        const track = this.props.engine.tracks.get(trackId);
-
-        if (track) {
-            track.updateSequenceNote(noteIndex, isActive);
-            this.forceUpdate();
-        }
-
+    private handleToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean) {
+        track.emitter.emit(new SetTrackNoteEvent(noteIndex, isActive));
     }
 
     public render() {
         const trackViews = [];
-        for (const [id, track] of this.props.engine.tracks.entries()) {
+
+        for (const track of this.props.tracks) {
             trackViews.push(
-                <TrackView key={id} track={track}
-                           transportPosition={this.state.transportPosition}
-                           onToggleNote={this.handleToggleNote.bind(this)}
+                <TrackView key={track.id} track={track}
+                   transportPosition={this.state.transportPosition}
+                   onToggleNote={this.handleToggleNote.bind(this)}
                 />
             );
         }
 
         return (
             <>
-                <TransportControlView engine={this.props.engine}/>
+                <TransportControlView transport={this.props.transport}/>
                 <table style={{width: '100%'}}>
                     <tbody>
                     {trackViews}

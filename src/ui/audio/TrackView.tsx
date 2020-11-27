@@ -6,12 +6,13 @@ import {MuteChannelEvent} from "../../events/track/MuteChannelEvent";
 import {UpdateChannelPanningEvent} from "../../events/track/UpdatePanningVolumeEvent";
 import {SetChannelReverbEvent} from "../../events/track/SetChannelReverbEvent";
 import {SetChannelChorusEvent} from "../../events/track/SetChannelChorusEvent";
+import {TrackEvent} from "../../events/track/TrackEvent";
 
 interface TrackViewProps {
     track: SampleTrack
     transportPosition: number;
 
-    onToggleNote(trackIndex: string, noteIndex: number, isActive: boolean): void
+    onToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean): void
 }
 
 interface TrackViewState {
@@ -37,12 +38,18 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
         }
     }
 
+    public componentDidMount() {
+        this.props.track.emitter.on(TrackEvent, (event: TrackEvent) => {
+            this.forceUpdate();
+        })
+    }
+
     public render() {
         const {track} = this.props;
 
         const columns = track.sequenceNotes.map((value, index) => {
             return <td
-                onClick={() => this.props.onToggleNote(track.id, index, !value)}
+                onClick={() => this.props.onToggleNote(track, index, !value)}
                 key={index}
                 className={[value ? "active-note" : "inactive-note", this.props.transportPosition === index ? 'current-note' : ''].join(' ')}
             />
