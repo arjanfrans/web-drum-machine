@@ -44,23 +44,32 @@
     background-color: cyan;
 }
 
-table {
+table.transport {
     table-layout: fixed;
     max-width:100%;
     white-space:nowrap;
 }
 
-table td {
+table.transport td {
     overflow: visible;
     width: 100%;
 }
 
-tr td:first-child {
+table.transport tr td:first-child {
     width: 250px;
 }
 
-tr td:last-child{
+table.transport tr td:last-child{
     width:1%;
     white-space:nowrap;
 }
 
+input[type="range"].vertical-range {
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 50px;
+    height: 200px;
+    padding: 0 24px;
+    outline: none;
+    background:transparent;
+}

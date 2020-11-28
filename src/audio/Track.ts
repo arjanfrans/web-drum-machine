@@ -9,13 +9,16 @@ import { SetChannelReverbEvent } from "../events/track/SetChannelReverbEvent";
 import { SetChannelChorusEvent } from "../events/track/SetChannelChorusEvent";
 import { EffectsRack } from "./EffectsRack";
 import { SetTrackNoteEvent } from "../events/track/SetTrackNoteEvent";
+import { Decibels } from "tone/Tone/core/type/Units";
+import { UpdateSendVolumeEvent } from "../events/track/UpdateSendVolumeEvent";
 
-export class SampleTrack {
+export class Track {
     public readonly player: Tone.Player;
     private sequence?: Tone.Sequence;
     public readonly emitter: EventEmitter = new EventEmitter();
     public readonly channel: Tone.Channel;
     public readonly effectsRack: EffectsRack;
+    public readonly sends: Map<string, Tone.Gain<"decibels">> = new Map<string, Tone.Gain<"decibels">>();
 
     constructor(
         public readonly id: string,
@@ -30,7 +33,7 @@ export class SampleTrack {
         this.player.connect(this.channel);
 
         const reverb = new Tone.Reverb({
-            wet: 0.3,
+            wet: 0.5,
             preDelay: 0.01,
         });
         const chorus = new Tone.Chorus({
@@ -90,6 +93,20 @@ export class SampleTrack {
                 this.effectsRack.disableEffect("chorus");
             }
         });
+
+        this.emitter.on(UpdateSendVolumeEvent, (event: UpdateSendVolumeEvent) => {
+            this.send(event.bus, event.volume);
+        });
+    }
+
+    public send(bus: string, volume: Decibels = 0): void {
+        const sendKnob = this.channel.send(bus, volume);
+
+        this.sends.set(bus, sendKnob);
+    }
+
+    public getSend(bus: string): Tone.Gain<"decibels"> | null {
+        return this.sends.get(bus) || null;
     }
 
     private updateSequence(): void {

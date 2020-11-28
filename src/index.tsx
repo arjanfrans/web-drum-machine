@@ -4,14 +4,15 @@ import './index.css';
 import {TransportView} from "./ui/audio/TransportView";
 import {AudioEngine} from "./audio/AudioEngine";
 import {CONFIG} from "./config";
+import {MixerView} from "./ui/audio/MixerView";
+
+const version = process.env.REACT_APP_VERSION
 
 interface JukeboxState {
     engine: AudioEngine|null
 }
 
 export class Jukebox extends React.Component<{}, JukeboxState> {
-    private engine?: AudioEngine;
-
     constructor(props: {}) {
         super(props);
 
@@ -45,9 +46,11 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
 
         return <>
             <TransportView
+                sendBuses={[...this.state.engine.buses.keys()]}
                 transport={this.state.engine.transport}
                 tracks={[...this.state.engine.tracks.values()]}
             />
+            <MixerView buses={[...this.state.engine.buses.values()]} />
         </>
     }
 }
@@ -56,7 +59,7 @@ ReactDOM.render(
     <React.StrictMode>
         <Jukebox/>
         <hr/>
-        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-drum-machine">Source Code</a>
+        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-drum-machine">Source Code</a> | Version: {version}
     </React.StrictMode>,
     document.getElementById('root')
 );

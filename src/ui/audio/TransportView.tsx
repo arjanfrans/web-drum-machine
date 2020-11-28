@@ -3,12 +3,13 @@ import {TrackView} from "./TrackView";
 import {TransportControlView} from "./TransportControlView";
 import {TransportPositionUpdatedEvent} from "../../events/transport/TransportPositionUpdatedEvent";
 import {Transport} from "../../audio/Transport"
-import {SampleTrack} from "../../audio/SampleTrack";
+import {Track} from "../../audio/Track";
 import {SetTrackNoteEvent} from "../../events/track/SetTrackNoteEvent";
 
 interface TransportViewProps {
     transport: Transport
-    tracks: SampleTrack[]
+    tracks: Track[]
+    sendBuses: string[]
 }
 
 interface TransportViewState {
@@ -32,7 +33,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
         })
     }
 
-    private static handleToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean) {
+    private static handleToggleNote(track: Track, noteIndex: number, isActive: boolean) {
         track.emitter.emit(new SetTrackNoteEvent(noteIndex, isActive));
     }
 
@@ -42,6 +43,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
         for (const track of this.props.tracks) {
             trackViews.push(
                 <TrackView key={track.id} track={track}
+                   sendBuses={this.props.sendBuses}
                    transportPosition={this.state.transportPosition}
                    onToggleNote={TransportView.handleToggleNote.bind(this)}
                 />
@@ -51,7 +53,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
         return (
             <>
                 <TransportControlView transport={this.props.transport}/>
-                <table style={{width: '100%'}}>
+                <table className="transport" style={{width: '100%'}}>
                     <tbody>
                     {trackViews}
                     </tbody>

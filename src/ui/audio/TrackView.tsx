@@ -1,5 +1,5 @@
 import React from "react";
-import {SampleTrack} from "../../audio/SampleTrack";
+import {Track} from "../../audio/Track";
 import {UpdateChannelVolumeEvent} from "../../events/track/UpdateChannelVolumeEvent";
 import {SoloChannelEvent} from "../../events/track/SoloChannelEvent";
 import {MuteChannelEvent} from "../../events/track/MuteChannelEvent";
@@ -7,12 +7,14 @@ import {UpdateChannelPanningEvent} from "../../events/track/UpdatePanningVolumeE
 import {SetChannelReverbEvent} from "../../events/track/SetChannelReverbEvent";
 import {SetChannelChorusEvent} from "../../events/track/SetChannelChorusEvent";
 import {TrackEvent} from "../../events/track/TrackEvent";
+import {UpdateSendVolumeEvent} from "../../events/track/UpdateSendVolumeEvent";
 
 interface TrackViewProps {
-    track: SampleTrack
+    track: Track
+    sendBuses: string[]
     transportPosition: number;
 
-    onToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean): void
+    onToggleNote(track: Track, noteIndex: number, isActive: boolean): void
 }
 
 interface TrackViewState {
@@ -108,6 +110,32 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             });
         }
 
+        const updateSendBus = (busName: string, volume: number) => {
+            const send = track.getSend(busName);
+
+            if (!send || volume !== send.gain.value) {
+                track.emitter.emit(new UpdateSendVolumeEvent(busName, volume));
+            }
+        }
+
+        const sendBuses = this.props.sendBuses.map((busName: string) => {
+            const sendKnob = track.getSend(busName);
+
+            return <div key={busName} title={`Send: ${busName}`}>
+                    <input style={{width: '140px'}}
+                           onMouseUp={(event: React.FormEvent<HTMLInputElement>) => {
+                               const volume = Number.parseInt(event.currentTarget.value);
+
+                               updateSendBus(busName, volume)
+                           }}
+                           defaultValue={sendKnob?.gain.value || "-32"}
+                           type="range" step="1"
+                           min="-32"
+                           max="12"
+                    />
+                </div>
+        });
+
         return (
             <>
                 <tr>
@@ -139,17 +167,22 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
                         </div>
                     </td>
                     {columns}
-                    <td style={{width: '100px'}}>
-                        <span title={"Reverb"}>
-                            <button onClick={enableReverb}
-                                    className={this.state.enableReverb ? "active-reverb-button" : "inactive-reverb-button"}>Rvb
-                            </button>
-                        </span>
-                        <span title={"Chorus"}>
-                            <button onClick={enableChorus}
-                                    className={this.state.enableChorus ? "active-chorus-button" : "inactive-chorus-button"}>Chr
-                            </button>
-                        </span>
+                    <td style={{width: '150px'}}>
+                        <div>
+                            <span title={"Reverb"}>
+                                <button onClick={enableReverb}
+                                        className={this.state.enableReverb ? "active-reverb-button" : "inactive-reverb-button"}>Rvb
+                                </button>
+                            </span>
+                            <span title={"Chorus"}>
+                                <button onClick={enableChorus}
+                                        className={this.state.enableChorus ? "active-chorus-button" : "inactive-chorus-button"}>Chr
+                                </button>
+                            </span>
+                        </div>
+                        <div>
+                            {sendBuses}
+                        </div>
                     </td>
                 </tr>
             </>)
