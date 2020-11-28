@@ -1,6 +1,6 @@
 {
-  "short_name": "Web Sampler",
-  "name": "Web Sampler: a rhythm machine for the web",
+  "short_name": "Web Drum Machine",
+  "name": "Web Drum Machine: a drum machine for the web",
   "icons": [
     {
       "src": "favicon.ico",
