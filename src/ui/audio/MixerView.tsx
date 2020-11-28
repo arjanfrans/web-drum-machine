@@ -1,5 +1,5 @@
 import React from "react";
-import {Bus} from "../../audio/Bus";
+import {Bus} from "../../audio/bus/Bus";
 import {BusTrackView} from "./BusTrackView";
 
 interface MixerViewProps {

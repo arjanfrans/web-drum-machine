@@ -1,10 +1,10 @@
 import React from "react";
 import {TrackView} from "./TrackView";
 import {TransportControlView} from "./TransportControlView";
-import {TransportPositionUpdatedEvent} from "../../events/transport/TransportPositionUpdatedEvent";
-import {Transport} from "../../audio/Transport"
-import {Track} from "../../audio/Track";
-import {SetTrackNoteEvent} from "../../events/track/SetTrackNoteEvent";
+import {TransportPositionUpdatedEvent} from "../../audio/transport/events/TransportPositionUpdatedEvent";
+import {Transport} from "../../audio/transport/Transport"
+import {Track} from "../../audio/track/Track";
+import {SetTrackNoteEvent} from "../../audio/track/events/SetTrackNoteEvent";
 
 interface TransportViewProps {
     transport: Transport

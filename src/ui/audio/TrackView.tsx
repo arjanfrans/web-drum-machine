@@ -1,13 +1,13 @@
 import React from "react";
-import {Track} from "../../audio/Track";
-import {UpdateChannelVolumeEvent} from "../../events/track/UpdateChannelVolumeEvent";
-import {SoloChannelEvent} from "../../events/track/SoloChannelEvent";
-import {MuteChannelEvent} from "../../events/track/MuteChannelEvent";
-import {UpdateChannelPanningEvent} from "../../events/track/UpdatePanningVolumeEvent";
-import {SetChannelReverbEvent} from "../../events/track/SetChannelReverbEvent";
-import {SetChannelChorusEvent} from "../../events/track/SetChannelChorusEvent";
-import {TrackEvent} from "../../events/track/TrackEvent";
-import {UpdateSendVolumeEvent} from "../../events/track/UpdateSendVolumeEvent";
+import {Track} from "../../audio/track/Track";
+import {UpdateChannelVolumeEvent} from "../../audio/track/events/UpdateChannelVolumeEvent";
+import {SoloChannelEvent} from "../../audio/track/events/SoloChannelEvent";
+import {MuteChannelEvent} from "../../audio/track/events/MuteChannelEvent";
+import {UpdateChannelPanningEvent} from "../../audio/track/events/UpdatePanningVolumeEvent";
+import {SetChannelReverbEvent} from "../../audio/track/events/SetChannelReverbEvent";
+import {SetChannelChorusEvent} from "../../audio/track/events/SetChannelChorusEvent";
+import {TrackEvent} from "../../audio/track/events/TrackEvent";
+import {UpdateSendVolumeEvent} from "../../audio/track/events/UpdateSendVolumeEvent";
 
 interface TrackViewProps {
     track: Track

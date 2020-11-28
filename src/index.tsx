@@ -10,6 +10,7 @@ const version = process.env.REACT_APP_VERSION
 
 if (process.env.NODE_ENV === "production") {
     const noop = () => null;
+
     console.log = noop;
     console.debug = noop;
 }

@@ -1,6 +1,6 @@
 import React from "react";
-import {Bus} from "../../audio/Bus";
-import {UpdateChannelVolumeEvent} from "../../events/track/UpdateChannelVolumeEvent";
+import {Bus} from "../../audio/bus/Bus";
+import {UpdateChannelVolumeEvent} from "../../audio/track/events/UpdateChannelVolumeEvent";
 
 interface BusTrackViewProps {
     bus: Bus

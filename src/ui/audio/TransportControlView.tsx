@@ -1,9 +1,9 @@
 import React from "react";
-import {StartTransportEvent} from "../../events/transport/StartTransportEvent";
-import {StopTransportEvent} from "../../events/transport/StopTransportEvent";
-import {PauseTransportEvent} from "../../events/transport/PauseTransportEvent";
-import {Transport} from "../../audio/Transport"
-import {UpdateBpmTransportEvent} from "../../events/transport/UpdateBpmTransportEvent";
+import {StartTransportEvent} from "../../audio/transport/events/StartTransportEvent";
+import {StopTransportEvent} from "../../audio/transport/events/StopTransportEvent";
+import {PauseTransportEvent} from "../../audio/transport/events/PauseTransportEvent";
+import {Transport} from "../../audio/transport/Transport"
+import {UpdateBpmTransportEvent} from "../../audio/transport/events/UpdateBpmTransportEvent";
 
 interface TransportControlViewProps {
     transport: Transport

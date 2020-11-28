@@ -1,10 +1,11 @@
 import { Config } from "./Config";
-import { Track } from "./Track";
+import { Track } from "./track/Track";
 import * as Tone from "tone";
 import { EventEmitter } from "../events/EventEmitter";
-import { Transport } from "./Transport";
-import { Bus } from "./Bus";
-import { BusFactory } from "./BusFactory";
+import { Transport } from "./transport/Transport";
+import { Bus } from "./bus/Bus";
+import { BusFactory } from "./bus/BusFactory";
+import { TrackFactory } from "./track/TrackFactory";
 
 export class AudioEngine {
     public readonly tracks: Map<string, Track> = new Map<string, Track>();
@@ -18,9 +19,10 @@ export class AudioEngine {
 
     public async init() {
         for (const trackData of this.config.trackData) {
-            const track = new Track(trackData.id, trackData.name, trackData.sample, trackData.sequenceNotes);
-
-            this.tracks.set(trackData.id, track);
+            this.tracks.set(
+                trackData.id,
+                TrackFactory.createTrack(trackData.id, trackData.name, trackData.sample, trackData.sequenceNotes)
+            );
         }
 
         this.buses.set("chorus", BusFactory.createChorusBus());
