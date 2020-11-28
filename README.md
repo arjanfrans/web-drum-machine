@@ -1,3 +1,3 @@
-# web-sampler
+# Web Drum Machine
 
-[web-sampler.arjanfrans.com](https://web-sampler.arjanfrans.com/)
+[web-drum-machine.arjanfrans.com](https://web-drum-machine.arjanfrans.com/)

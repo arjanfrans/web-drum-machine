@@ -56,7 +56,7 @@ ReactDOM.render(
     <React.StrictMode>
         <Jukebox/>
         <hr/>
-        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-sampler">Source Code</a>
+        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-drum-machine">Source Code</a>
     </React.StrictMode>,
     document.getElementById('root')
 );

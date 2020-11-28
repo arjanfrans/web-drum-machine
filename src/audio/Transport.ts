@@ -24,6 +24,10 @@ export class Transport {
         this.sequenceSteps = config.sequenceSteps;
     }
 
+    public get bpm(): number {
+        return Math.round(Tone.Transport.bpm.value);
+    }
+
     public init() {
         Tone.Transport.bpm.value = 96;
         Tone.Transport.loopStart = 0;

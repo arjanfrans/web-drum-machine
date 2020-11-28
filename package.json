@@ -1,6 +1,6 @@
 {
-  "name": "web-sampler",
-  "version": "0.1.0",
+  "name": "web-drum-machine",
+  "version": "0.0.1",
   "license": "MIT",
   "private": true,
   "dependencies": {

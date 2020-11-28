@@ -32,7 +32,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
         })
     }
 
-    private handleToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean) {
+    private static handleToggleNote(track: SampleTrack, noteIndex: number, isActive: boolean) {
         track.emitter.emit(new SetTrackNoteEvent(noteIndex, isActive));
     }
 
@@ -43,7 +43,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
             trackViews.push(
                 <TrackView key={track.id} track={track}
                    transportPosition={this.state.transportPosition}
-                   onToggleNote={this.handleToggleNote.bind(this)}
+                   onToggleNote={TransportView.handleToggleNote.bind(this)}
                 />
             );
         }

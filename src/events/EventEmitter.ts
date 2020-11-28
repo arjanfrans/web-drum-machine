@@ -10,7 +10,6 @@ export class EventEmitter {
     }
 
     public emit(event: any): void {
-        console.debug(event);
         this.emitter.emit(event.constructor.Name, event);
     }
 
