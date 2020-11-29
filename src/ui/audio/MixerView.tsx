@@ -14,13 +14,9 @@ export class MixerView extends React.Component<MixerViewProps, {}>
        });
 
        return (
-           <table>
-               <tbody>
-                   <tr>
-                       {busTracks}
-                   </tr>
-               </tbody>
-           </table>
+           <div>
+               {busTracks}
+           </div>
        );
    }
 }

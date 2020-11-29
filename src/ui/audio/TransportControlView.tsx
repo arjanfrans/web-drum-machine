@@ -4,6 +4,8 @@ import {StopTransportEvent} from "../../audio/transport/events/StopTransportEven
 import {PauseTransportEvent} from "../../audio/transport/events/PauseTransportEvent";
 import {Transport} from "../../audio/transport/Transport"
 import {UpdateBpmTransportEvent} from "../../audio/transport/events/UpdateBpmTransportEvent";
+import styles from "./TransportControlView.module.css"
+import {PlayButton, PauseButton, StopButton } from "../component/buttons";
 
 interface TransportControlViewProps {
     transport: Transport
@@ -58,8 +60,7 @@ export class TransportControlView extends React.Component<TransportControlViewPr
         this.props.transport.emitter.emit(new PauseTransportEvent())
     }
 
-    private commitBpmChange(event: React.FormEvent<HTMLInputElement>): void
-    {
+    private commitBpmChange(event: React.FormEvent<HTMLInputElement>): void {
         const bpm = Math.max(1, Math.min(Number.parseInt(event.currentTarget.value), 400));
 
         if (bpm !== this.state.bpm) {
@@ -78,10 +79,10 @@ export class TransportControlView extends React.Component<TransportControlViewPr
 
     public render() {
         return (
-            <div>
-                <button disabled={!this.state.enableStart} onClick={() => this.handleStartClick()}>Start</button>
-                <button disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()}>Pause</button>
-                <button disabled={!this.state.enableStop} onClick={() => this.handleStopClick()}>Stop</button>
+            <div className={styles.container}>
+                <PlayButton disabled={!this.state.enableStart} onClick={() => this.handleStartClick()} />
+                <PauseButton disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()} />
+                <StopButton disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
                 <input title="BPM" min={1} max={1600} type="number" defaultValue={this.state.bpm}
                        onChange={TransportControlView.handleBpmChange.bind(this)}
                        onBlur={this.commitBpmChange.bind(this)}

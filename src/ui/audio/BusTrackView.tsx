@@ -1,6 +1,7 @@
 import React from "react";
 import {Bus} from "../../audio/bus/Bus";
 import {UpdateChannelVolumeEvent} from "../../audio/track/events/UpdateChannelVolumeEvent";
+import styles from "./BusTrackView.module.css"
 
 interface BusTrackViewProps {
     bus: Bus
@@ -34,19 +35,23 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
         }
 
         return (
-            <>
-                <td>
-                   <span title="Volume">
-                        <input className="vertical-range" onChange={updateVolume} type="range" step="1"
-                               min="-32"
-                               max="12"
-                               value={this.state.volume}/>
-                    </span>
-                    <div>
-                        {bus.name}
-                    </div>
-                </td>
-            </>
+            <div className={styles.container}>
+                <input className={styles.slider} type="range" step="0.01" min="-1" max="1" list="tickmarks"/>
+                <datalist id="tickmarks" className={styles.sliderticks}>
+                    <option value="-1">L</option>
+                    <option value="0">C</option>
+                    <option value="1">R</option>
+                </datalist>
+               <div className={styles.center} title="Volume">
+                    <input className={styles.verticalRange} onChange={updateVolume} type="range" step="1"
+                           min="-32"
+                           max="12"
+                           value={this.state.volume}/>
+                </div>
+                <div className={styles.name}>
+                    {bus.name}
+                </div>
+            </div>
         );
     }
 }

@@ -63,13 +63,3 @@ table.transport tr td:last-child{
     width:1%;
     white-space:nowrap;
 }
-
-input[type="range"].vertical-range {
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical; /* WebKit */
-    width: 50px;
-    height: 200px;
-    padding: 0 24px;
-    outline: none;
-    background:transparent;
-}
