@@ -19,13 +19,23 @@ export class BusFactory {
         const bus = new Bus("chorus", "Chorus");
 
         const chorus = new Tone.Chorus({
-            depth: 0.4,
-            spread: 0.4,
-            feedback: 0.4,
+            frequency: 4,
+            delayTime: 2.5,
+            depth: 0.5,
             wet: 1,
         });
 
         bus.effectsRack.add("chorus", chorus);
+
+        return bus;
+    }
+
+    public static createDelayBus(): Bus {
+        const bus = new Bus("delay", "Delay");
+
+        const delay = new Tone.FeedbackDelay("4n", 0.05);
+
+        bus.effectsRack.add("delay", delay);
 
         return bus;
     }

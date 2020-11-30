@@ -8,6 +8,9 @@ import {SetChannelReverbEvent} from "../../audio/track/events/SetChannelReverbEv
 import {SetChannelChorusEvent} from "../../audio/track/events/SetChannelChorusEvent";
 import {TrackEvent} from "../../audio/track/events/TrackEvent";
 import {UpdateSendVolumeEvent} from "../../audio/track/events/UpdateSendVolumeEvent";
+import {ToggleButton} from "../component/ToggleButton";
+import {Color} from "../Color";
+import {TrackControlView} from "./TrackControlView";
 
 interface TrackViewProps {
     track: Track
@@ -122,49 +125,25 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             const sendKnob = track.getSend(busName);
 
             return <div key={busName} title={`Send: ${busName}`}>
-                    <input style={{width: '140px'}}
-                           onMouseUp={(event: React.FormEvent<HTMLInputElement>) => {
-                               const volume = Number.parseInt(event.currentTarget.value);
+                <input style={{width: '140px'}}
+                       onMouseUp={(event: React.FormEvent<HTMLInputElement>) => {
+                           const volume = Number.parseInt(event.currentTarget.value);
 
-                               updateSendBus(busName, volume)
-                           }}
-                           defaultValue={sendKnob?.gain.value || "-32"}
-                           type="range" step="1"
-                           min="-32"
-                           max="12"
-                    />
-                </div>
+                           updateSendBus(busName, volume)
+                       }}
+                       defaultValue={sendKnob?.gain.value || "-32"}
+                       type="range" step="1"
+                       min="-32"
+                       max="12"
+                />
+            </div>
         });
 
         return (
             <>
                 <tr>
                     <td>
-                        <div>
-                            <strong>{track.name}</strong>
-                        </div>
-                        <div style={{width: '150px'}}>
-                            <span title="Panning">
-                            P: <input onChange={updatePanning} type="range" step="0.01" min="-1" max="1"
-                                      value={this.state.pan}/>
-                              </span>
-
-                            <button onClick={muteChannel}
-                                    className={this.state.mute ? "unmute-button" : "mute-button"}>Mute
-                            </button>
-                            <button onClick={soloChannel}
-                                    className={this.state.solo ? "unsolo-button" : "solo-button"}>Solo
-                            </button>
-                        </div>
-
-                        <div>
-                            <span title="Volume">
-                                V: <input style={{width: '220px'}} onChange={updateVolume} type="range" step="1"
-                                          min="-32"
-                                          max="12"
-                                          value={this.state.volume}/>
-                            </span>
-                        </div>
+                        <TrackControlView track={track}/>
                     </td>
                     {columns}
                     <td style={{width: '150px'}}>

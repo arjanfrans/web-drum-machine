@@ -27,6 +27,7 @@ export class AudioEngine {
 
         this.buses.set("chorus", BusFactory.createChorusBus());
         this.buses.set("reverb", BusFactory.createReverbBus());
+        this.buses.set("delay", BusFactory.createDelayBus());
 
         await Tone.loaded();
         await Tone.start();

@@ -17,3 +17,4 @@ export const StopButton = (props: any) => (
         &#9209;
     </button>
 )
+
