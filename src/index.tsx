@@ -9,14 +9,14 @@ import {MixerView} from "./ui/audio/MixerView";
 const version = process.env.REACT_APP_VERSION
 
 if (process.env.NODE_ENV === "production") {
-    const noop = () => null;
+    const noop = () => undefined;
 
     console.log = noop;
     console.debug = noop;
 }
 
 interface JukeboxState {
-    engine: AudioEngine|null
+    engine?: AudioEngine
 }
 
 export class Jukebox extends React.Component<{}, JukeboxState> {
@@ -24,9 +24,8 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
         super(props);
 
         this.state = {
-            engine: null
+            engine: undefined
         }
-
     }
 
     private async startEngine()

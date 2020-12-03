@@ -18,16 +18,24 @@ export class AudioEngine {
     }
 
     public async init() {
-        for (const trackData of this.config.trackData) {
-            this.tracks.set(
-                trackData.id,
-                TrackFactory.createTrack(trackData.id, trackData.name, trackData.sample, trackData.sequenceNotes)
-            );
-        }
-
         this.buses.set("chorus", BusFactory.createChorusBus());
         this.buses.set("reverb", BusFactory.createReverbBus());
         this.buses.set("delay", BusFactory.createDelayBus());
+
+        for (const trackData of this.config.trackData) {
+            const track = TrackFactory.createTrack(
+                trackData.id,
+                trackData.name,
+                trackData.sample,
+                trackData.sequenceNotes
+            );
+
+            track.send("chorus");
+            track.send("reverb");
+            track.send("delay");
+
+            this.tracks.set(trackData.id, track);
+        }
 
         await Tone.loaded();
         await Tone.start();

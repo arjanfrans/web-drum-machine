@@ -1,0 +1,6 @@
+.trackGrid {
+    display: grid;
+    column-gap: 2px;
+    grid-gap: 1px;
+}
+

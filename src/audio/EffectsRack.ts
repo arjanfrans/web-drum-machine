@@ -29,6 +29,12 @@ export class EffectsRack {
         });
     }
 
+    public isEnabled(name: string): boolean {
+        const effect = this.effects.get(name);
+
+        return effect ? effect.enabled : false;
+    }
+
     public add(name: string, effect: Tone.ToneAudioNode, input?: string) {
         const connection = { name, node: effect, input, enabled: true };
         const inputConnection = this.findNextInputConnection(connection);

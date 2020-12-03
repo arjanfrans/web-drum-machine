@@ -7,7 +7,6 @@ import {UpdateChannelPanningEvent} from "../../audio/track/events/UpdatePanningV
 import {SoloChannelEvent} from "../../audio/track/events/SoloChannelEvent";
 import {MuteChannelEvent} from "../../audio/track/events/MuteChannelEvent";
 import {ToggleButton} from "../component/ToggleButton";
-import {Color} from "../Color";
 
 interface BusTrackViewProps {
     bus: Bus
@@ -93,13 +92,13 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
                     <ToggleButton
                         onClick={soloChannel}
                         isActive={!this.state.solo}
-                        activeColor={Color.yellow}
+                        activeColor={'goldenrod'}
                         label="S"
                     />
                     <ToggleButton
                         onClick={muteChannel}
                         isActive={!this.state.mute}
-                        activeColor={Color.red}
+                        activeColor={'darkred'}
                         label="M"
                     />
                 </div>

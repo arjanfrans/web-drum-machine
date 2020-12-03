@@ -5,6 +5,7 @@ import {TransportPositionUpdatedEvent} from "../../audio/transport/events/Transp
 import {Transport} from "../../audio/transport/Transport"
 import {Track} from "../../audio/track/Track";
 import {SetTrackNoteEvent} from "../../audio/track/events/SetTrackNoteEvent";
+import styles from "./TransportView.module.css"
 
 interface TransportViewProps {
     transport: Transport
@@ -53,11 +54,9 @@ export class TransportView extends React.Component<TransportViewProps, Transport
         return (
             <>
                 <TransportControlView transport={this.props.transport}/>
-                <table className="transport" style={{width: '100%'}}>
-                    <tbody>
+                <div className={styles.transportGrid}>
                     {trackViews}
-                    </tbody>
-                </table>
+                </div>
             </>
         )
     }

@@ -9,7 +9,8 @@ import {VolumeSlider} from "../component/VolumeSlider";
 import styles from "./TrackControlView.module.css"
 import {PanningSlider} from "../component/PanningSlider";
 import {ToggleButton} from "../component/ToggleButton";
-import {Color} from "../Color";
+import {SetChannelReverbEvent} from "../../audio/track/events/SetChannelReverbEvent";
+import {SetChannelChorusEvent} from "../../audio/track/events/SetChannelChorusEvent";
 
 interface TrackControlProps {
     track: Track
@@ -20,6 +21,8 @@ interface TrackControlState {
     pan: number;
     solo: boolean
     mute: boolean
+    enableReverb: boolean
+    enableChorus: boolean
 }
 
 export class TrackControlView extends React.Component<TrackControlProps, TrackControlState> {
@@ -31,6 +34,8 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
             volume: props.track.channel.volume.value,
             solo: props.track.channel.solo,
             mute: props.track.channel.mute,
+            enableReverb: props.track.effectsRack.isEnabled("reverb"),
+            enableChorus: props.track.effectsRack.isEnabled("chorus")
         }
     }
 
@@ -80,36 +85,62 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
             });
         }
 
+        const enableReverb = () => {
+            track.emitter.emit(new SetChannelReverbEvent(!this.state.enableReverb));
+
+            this.setState({
+                enableReverb: !this.state.enableReverb
+            });
+        }
+
+        const enableChorus = () => {
+            track.emitter.emit(new SetChannelChorusEvent(!this.state.enableChorus));
+
+            this.setState({
+                enableChorus: !this.state.enableChorus
+            });
+        }
+
         return (
             <div className={styles.container}>
-                <div className={styles.row}>
-                    <div className={styles.volume}>
-                        <VolumeSlider onChange={updateVolume} value={this.state.volume}/>
-                    </div>
-                    <div className={styles.panning}>
-                        <PanningSlider onChange={updatePanning} value={this.state.pan}/>
-                    </div>
+                <div>
+                    <VolumeSlider onChange={updateVolume} value={this.state.volume}/>
                 </div>
-                <div className={styles.row}>
-                    <div className={styles.name}>
-                        {track.name}
-                    </div>
-                    <div className={styles.toggleContainer}>
-                        <div className={styles.toggleContainerButtons}>
-                            <ToggleButton
-                                onClick={soloChannel}
-                                isActive={!this.state.solo}
-                                activeColor={Color.yellow}
-                                label="S"
-                            />
-                            <ToggleButton
-                                onClick={muteChannel}
-                                isActive={!this.state.mute}
-                                activeColor={Color.red}
-                                label="M"
-                            />
-                        </div>
-                    </div>
+                <div>
+                    <PanningSlider onChange={updatePanning} value={this.state.pan}/>
+                </div>
+                <div className={styles.name}>
+                    {track.name}
+                </div>
+                <div className={styles.toggleContainer}>
+                    <ToggleButton
+                        onClick={soloChannel}
+                        isActive={!this.state.solo}
+                        activeColor={'goldenrod'}
+                        label="S"
+                        title={"Solo"}
+                    />
+                    <ToggleButton
+                        onClick={muteChannel}
+                        isActive={!this.state.mute}
+                        activeColor={'darkred'}
+                        label="M"
+                        title={"Mute"}
+                    />
+                    <ToggleButton
+                        onClick={enableReverb}
+                        isActive={!this.state.enableReverb}
+                        label={"R"}
+                        activeColor={'darkgreen'}
+                        title={"Reverb"}
+                    />
+                    <ToggleButton
+                        onClick={enableChorus}
+                        isActive={!this.state.enableChorus}
+                        label={"C"}
+                        activeColor={'cyan'}
+                        title={"Chorus"}
+                    />
                 </div>
             </div>
         );

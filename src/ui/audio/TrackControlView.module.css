@@ -1,24 +1,8 @@
 .container {
-    display: block;
-    padding: 2px;
-    border-top: 1px;
-    border-bottom: 1px;
-    border-right: 1px;
-    border-left: 1px;
-    border-top: 0;
-    border-color: grey;
-    border-style: solid;
-}
-
-.container:first-child {
-    border-top: 1px;
-    border-color: grey;
-    border-style: solid;
-}
-
-.row {
-    display: flex;
-    border-right: 1px;
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr auto;
+    background-color: #d5d5d5;
 }
 
 .name {
@@ -30,30 +14,6 @@
 .center {
     text-align: center;
     align-content: center;
-}
-
-.volume {
-    width: 150px;
-    display: inline-block;
-}
-
-.panning {
-    width: 50px;
-    display: inline-block;
-}
-
-.toggleContainer {
-    text-align: right;
-    margin-left: auto;
-    margin-right: 0;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-}
-
-.toggleContainerButtons {
-    margin-left: auto;
-    margin-right: 2px;
 }
 
 .verticalRange {

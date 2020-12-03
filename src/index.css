@@ -44,22 +44,4 @@
     background-color: cyan;
 }
 
-table.transport {
-    table-layout: fixed;
-    max-width:100%;
-    white-space:nowrap;
-}
 
-table.transport td {
-    overflow: visible;
-    width: 100%;
-}
-
-table.transport tr td:first-child {
-    width: 250px;
-}
-
-table.transport tr td:last-child{
-    width:1%;
-    white-space:nowrap;
-}

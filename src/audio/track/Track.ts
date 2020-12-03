@@ -9,7 +9,7 @@ export class Track {
     public readonly emitter: TrackEmitter;
     public readonly channel: Tone.Channel;
     public readonly effectsRack: EffectsRack;
-    public readonly sends: Map<string, Tone.Gain<"decibels">> = new Map<string, Tone.Gain<"decibels">>();
+    public readonly sends: Map<string, Tone.Gain<"decibels"> | undefined> = new Map();
 
     constructor(
         public readonly id: string,
@@ -28,14 +28,24 @@ export class Track {
         this.updateSequence();
     }
 
-    public send(bus: string, volume: Decibels = 0): void {
-        const sendKnob = this.channel.send(bus, volume);
+    public send(bus: string, volume?: Decibels): void {
+        let sendKnob = this.sends.get(bus);
 
-        this.sends.set(bus, sendKnob);
+        if (!sendKnob) {
+            sendKnob = this.channel.send(bus, volume);
+
+            this.sends.set(bus, sendKnob);
+        }
+
+        if (volume) {
+            sendKnob.gain.value = volume;
+        } else {
+            sendKnob.gain.value = -32;
+        }
     }
 
-    public getSend(bus: string): Tone.Gain<"decibels"> | null {
-        return this.sends.get(bus) || null;
+    public getSend(bus: string): Tone.Gain<"decibels"> | undefined {
+        return this.sends.get(bus);
     }
 
     private updateSequence(): void {

@@ -1,0 +1,15 @@
+.activeCell {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.inactiveCell {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.inactiveCell.currentNote {
+    background-color: rgba(128, 128, 128, 1);
+}
+
+.activeCell.currentNote {
+    background-color: rgba(255, 0, 0, 1);
+}

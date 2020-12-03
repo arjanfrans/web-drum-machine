@@ -1,11 +1,21 @@
 import React from "react";
 import styles from "./ToggleButton.module.css"
-import {Color, colorStyle} from "../Color";
 
-export const ToggleButton = ({isActive, onClick, label, activeColor}: { isActive: boolean, onClick: () => void, label: string, activeColor: Color }) => (
+interface ToggleButtonProps {
+    isActive: boolean,
+    onClick: () => void,
+    label: string,
+    activeColor: string
+}
+
+export const ToggleButton = ({isActive, onClick, label, activeColor, ...props}: ToggleButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button
-        className={`${(!isActive ? colorStyle[activeColor] : '')} ${styles.container}`}
+        className={styles.container}
+        style={{
+            backgroundColor: !isActive ? activeColor : ''
+        }}
         onClick={onClick}
+        {...props}
     >
         {label}
     </button>
