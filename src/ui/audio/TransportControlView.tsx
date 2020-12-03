@@ -6,6 +6,7 @@ import {Transport} from "../../audio/transport/Transport"
 import {UpdateBpmTransportEvent} from "../../audio/transport/events/UpdateBpmTransportEvent";
 import styles from "./TransportControlView.module.css"
 import {PlayButton, PauseButton, StopButton } from "../component/buttons";
+import {BpmInput} from "../component/inputs";
 
 interface TransportControlViewProps {
     transport: Transport
@@ -80,14 +81,20 @@ export class TransportControlView extends React.Component<TransportControlViewPr
     public render() {
         return (
             <div className={styles.container}>
-                <PlayButton disabled={!this.state.enableStart} onClick={() => this.handleStartClick()} />
-                <PauseButton disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()} />
-                <StopButton disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
-                <input title="BPM" min={1} max={1600} type="number" defaultValue={this.state.bpm}
-                       onChange={TransportControlView.handleBpmChange.bind(this)}
-                       onBlur={this.commitBpmChange.bind(this)}
-                       onMouseUp={this.commitBpmChange.bind(this)}
-                />
+                <div>
+                    <PlayButton className={styles.item} disabled={!this.state.enableStart} onClick={() => this.handleStartClick()} />
+                    <PauseButton className={styles.item} disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()} />
+                    <StopButton className={styles.item} disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
+                </div>
+                <div>
+                    <BpmInput
+                        className={styles.item}
+                        defaultValue={this.state.bpm}
+                        onChange={TransportControlView.handleBpmChange.bind(this)}
+                        onBlur={this.commitBpmChange.bind(this)}
+                        onMouseUp={this.commitBpmChange.bind(this)}
+                    />
+                </div>
             </div>
         )
     }

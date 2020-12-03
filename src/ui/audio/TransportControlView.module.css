@@ -1,5 +1,14 @@
 .container {
-    padding: 2px;
-    border: 1px solid grey;
+    padding: 6px;
+    border: 1px solid black;
+    background-color: lightgrey;
+    display: grid;
+    grid-auto-flow: column;
+    align-items: start;
+    align-content: start;
+    vertical-align: center;
 }
 
+.item {
+    margin: 4px;
+}

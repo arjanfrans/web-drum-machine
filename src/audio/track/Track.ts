@@ -37,7 +37,7 @@ export class Track {
             this.sends.set(bus, sendKnob);
         }
 
-        if (volume) {
+        if (volume !== undefined) {
             sendKnob.gain.value = volume;
         } else {
             sendKnob.gain.value = -32;
@@ -52,7 +52,7 @@ export class Track {
         this.sequence = new Tone.Sequence(
             (time, index) => {
                 if (this.sequenceNotes[index]) {
-                    this.player.start(time, 0, "16t");
+                    this.player.start(time, 0);
                 }
             },
             Array.from(this.sequenceNotes.keys()),

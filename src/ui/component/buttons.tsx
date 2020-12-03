@@ -1,20 +1,20 @@
 import React from "react";
 
-export const PauseButton = (props: any) => (
+export const PauseButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props}>
-        &#x23F8;
+        Pause
     </button>
 )
 
-export const PlayButton = (props: any) => (
+export const PlayButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props}>
-        &#8227;
+        Play
     </button>
 )
 
-export const StopButton = (props: any) => (
+export const StopButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props}>
-        &#9209;
+        Stop
     </button>
 )
 

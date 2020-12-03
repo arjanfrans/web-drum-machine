@@ -56,7 +56,7 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
                 transport={this.state.engine.transport}
                 tracks={[...this.state.engine.tracks.values()]}
             />
-            <MixerView buses={[...this.state.engine.buses.values()]} />
+            <MixerView buses={[...this.state.engine.buses.values()]} audioEngine={this.state.engine} />
         </>
     }
 }
