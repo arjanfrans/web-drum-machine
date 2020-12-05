@@ -1,14 +1,14 @@
 import React from "react";
 import {Canvas} from "../component/Canvas";
-import styles from "./Meter.module.css"
-import {MeterCanvas} from "./canvas/MeterCanvas";
+import {MeterCanvas, MeterCanvasDirection} from "./canvas/MeterCanvas";
 
-export const Meter = ({listener, ...props}: any) => {
+export const Meter = ({listener, direction = MeterCanvasDirection.vertical, ...props}: any) => {
     const meterCanvas = new MeterCanvas({
         minValue: -48,
         maxValue: 12,
         redThreshold: 0,
-        yellowThreshold: -6
+        yellowThreshold: -6,
+        direction
     });
 
     const updateValue = (value: number): void => {
@@ -17,8 +17,11 @@ export const Meter = ({listener, ...props}: any) => {
 
     listener(updateValue);
 
+    let styleHorizontal = {width: '100px', height: '20px'};
+    let styleVertical = {width: '20px', height: '100px'};
+
     return (
-        <div className={styles.container} {...props}>
+        <div style={direction === MeterCanvasDirection.horizontal ? styleHorizontal : styleVertical} {...props}>
             <Canvas draw={(context: CanvasRenderingContext2D, frameCount: number) => meterCanvas.draw(context, frameCount)}/>
         </div>
     )
