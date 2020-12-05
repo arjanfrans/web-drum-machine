@@ -13,7 +13,7 @@ export class AudioEngine {
     public readonly buses: Map<string, Bus> = new Map<string, Bus>();
     public readonly emitter: EventEmitter = new EventEmitter();
     public readonly transport: Transport;
-    public readonly outputMeter: Tone.Meter = new Tone.Meter({ channels: 2, smoothing: 0.5, normalRange: true });
+    public readonly outputMeter: Tone.Meter = new Tone.Meter({ channels: 2, smoothing: 0.5 });
 
     constructor(private readonly config: Config) {
         this.transport = new Transport(config);
