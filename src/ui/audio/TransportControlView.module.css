@@ -4,9 +4,8 @@
     background-color: lightgrey;
     display: grid;
     grid-auto-flow: column;
-    align-items: start;
+    align-items: center;
     align-content: start;
-    vertical-align: center;
 }
 
 .item {

@@ -7,9 +7,13 @@ import {UpdateBpmTransportEvent} from "../../audio/transport/events/UpdateBpmTra
 import styles from "./TransportControlView.module.css"
 import {PlayButton, PauseButton, StopButton } from "../component/buttons";
 import {BpmInput} from "../component/inputs";
+import {AudioEngine} from "../../audio/AudioEngine";
+import {Meter} from "./meters/Meter";
+import {MasterOutputVolumeUpdatedEvent} from "../../audio/events/MasterOutputVolumeUpdatedEvent";
 
 interface TransportControlViewProps {
     transport: Transport
+    audioEngine: AudioEngine
 }
 
 interface TransportControlViewState {
@@ -78,6 +82,12 @@ export class TransportControlView extends React.Component<TransportControlViewPr
         event.currentTarget.value = `${bpm}`;
     }
 
+    private meterListener = (updateValue: (values: number[]) => void): void => {
+        this.props.audioEngine.emitter.on(MasterOutputVolumeUpdatedEvent, (event: MasterOutputVolumeUpdatedEvent) => {
+            updateValue([event.leftVolume, event.rightVolume])
+        });
+    }
+
     public render() {
         return (
             <div className={styles.container}>
@@ -85,6 +95,9 @@ export class TransportControlView extends React.Component<TransportControlViewPr
                     <PlayButton className={styles.item} disabled={!this.state.enableStart} onClick={() => this.handleStartClick()} />
                     <PauseButton className={styles.item} disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()} />
                     <StopButton className={styles.item} disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
+                </div>
+                <div>
+                    <Meter className={styles.item} direction="horizontal" style={{display: 'inline-block'}} onUpdate={this.meterListener}/>
                 </div>
                 <div>
                     <BpmInput

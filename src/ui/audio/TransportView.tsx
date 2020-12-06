@@ -6,8 +6,10 @@ import {Transport} from "../../audio/transport/Transport"
 import {Track} from "../../audio/track/Track";
 import {SetTrackNoteEvent} from "../../audio/track/events/SetTrackNoteEvent";
 import styles from "./TransportView.module.css"
+import {AudioEngine} from "../../audio/AudioEngine";
 
 interface TransportViewProps {
+    audioEngine: AudioEngine
     transport: Transport
     tracks: Track[]
     sendBuses: string[]
@@ -53,7 +55,7 @@ export class TransportView extends React.Component<TransportViewProps, Transport
 
         return (
             <>
-                <TransportControlView transport={this.props.transport}/>
+                <TransportControlView transport={this.props.transport} audioEngine={this.props.audioEngine}/>
                 <div className={styles.transportGrid}>
                     {trackViews}
                 </div>

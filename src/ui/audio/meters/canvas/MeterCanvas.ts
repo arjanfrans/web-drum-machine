@@ -4,12 +4,13 @@ type MeterCanvasOptions = {
     redThreshold: number;
     yellowThreshold: number;
     direction: "horizontal" | "vertical";
+    channels: number;
     width?: number;
     height?: number;
     boxes?: number;
     boxSpacing?: number;
     jitter?: number;
-    value?: number;
+    values?: number[];
 };
 
 export enum MeterCanvasDirection {
@@ -38,8 +39,10 @@ export class MeterCanvas {
     private readonly boxWidth: number;
     private readonly boxSpacingX: number;
     private readonly boxSpacingY: number;
-    private nextValue?: number;
-    private currentValue: number;
+    private readonly channelWidth: number;
+    private readonly channelHeight: number;
+    private nextValues: number[] = [];
+    private readonly currentValues: number[] = [];
 
     public readonly direction: string;
     public readonly maxValue: number;
@@ -56,6 +59,8 @@ export class MeterCanvas {
     private static MAX = 1;
     private static MIN = 0;
 
+    private readonly channels: number;
+
     constructor(options?: MeterCanvasOptions) {
         this.maxValue = options?.maxValue || 100;
         this.minValue = options?.minValue || 0;
@@ -65,24 +70,46 @@ export class MeterCanvas {
         this.jitter = options?.jitter || 0;
         this.redThreshold = options?.redThreshold || 0;
         this.yellowThreshold = options?.yellowThreshold || 0;
+        this.channels = options?.channels || 1;
         this.direction = options?.direction || "horizontal";
-        this.currentValue = this.normalizeValue(options?.value || this.minValue);
+
+        const defaultValues = [];
+
+        for (let i = 0; i < this.channels; i++) {
+            defaultValues[i] = this.normalizeValue(this.minValue);
+        }
+
+        if (options?.values) {
+            for (const [index, value] of options.values.entries()) {
+                defaultValues[index] = this.normalizeValue(value);
+            }
+        }
+
+        this.currentValues = defaultValues;
 
         this.width = options?.width || 20;
         this.height = options?.height || 100;
 
-        this.boxHeight = this.height / (this.boxes + (this.boxes + 1) * this.boxSpacing);
+        if (this.direction === MeterCanvasDirection.vertical) {
+            this.channelWidth = this.width;
+            this.channelHeight = this.height / this.channels;
+        } else {
+            this.channelWidth = this.width / this.channels;
+            this.channelHeight = this.height;
+        }
+
+        this.boxHeight = this.channelHeight / (this.boxes + (this.boxes + 1) * this.boxSpacing);
         this.boxSpacingY = this.boxHeight * this.boxSpacing;
 
-        this.boxWidth = this.width - this.boxSpacingY * 2;
-        this.boxSpacingX = (this.width - this.boxWidth) / 2;
+        this.boxWidth = this.channelWidth - this.boxSpacingY * 2;
+        this.boxSpacingX = (this.channelWidth - this.boxWidth) / 2;
 
         this.redBoxIndex = Math.ceil(this.normalizeValue(this.redThreshold) * this.boxes);
         this.yellowBoxIndex = Math.ceil(this.normalizeValue(this.yellowThreshold) * this.boxes);
     }
 
-    public set value(value: number) {
-        this.nextValue = Math.round(1000 * this.normalizeValue(value)) / 1000;
+    public set values(values: number[]) {
+        this.nextValues = values.map((v) => Math.round(1000 * this.normalizeValue(v)) / 1000);
     }
 
     /**
@@ -119,15 +146,15 @@ export class MeterCanvas {
         return value;
     }
 
-    private drawBox(context: CanvasRenderingContext2D, value: number, index: number): void {
+    private drawBox(context: CanvasRenderingContext2D, value: number, index: number, x: number, y: number): void {
         index = Math.abs(index - (this.boxes - 1)) + 1;
 
         context.beginPath();
 
         if (this.direction === MeterCanvasDirection.horizontal) {
-            context.rect(0, 0, this.boxHeight, this.boxWidth);
+            context.rect(x, y, this.boxHeight, this.boxWidth);
         } else {
-            context.rect(0, 0, this.boxWidth, this.boxHeight);
+            context.rect(x, y, this.boxWidth, this.boxHeight);
         }
 
         context.fillStyle = this.getBoxColor(index, value);
@@ -140,9 +167,7 @@ export class MeterCanvas {
         }
     }
 
-    private computeValue(value: number): number {
-        const nextValue = this.nextValue || 0;
-
+    private computeValue(value: number, nextValue: number = 0): number {
         // Gradual approach
         if (value <= nextValue) {
             value += (nextValue - value) / 5;
@@ -160,35 +185,48 @@ export class MeterCanvas {
     }
 
     public draw(context: CanvasRenderingContext2D, frameCount: number): void {
-        if (this.nextValue === undefined || this.currentValue !== this.nextValue) {
-            const value = this.computeValue(this.currentValue);
+        if (this.direction === MeterCanvasDirection.vertical) {
+            context.canvas.width = this.width;
+            context.canvas.height = this.height;
+        } else {
+            context.canvas.width = this.height;
+            context.canvas.height = this.width;
+        }
 
-            context.save();
-            context.beginPath();
+        for (let channel = 0; channel < this.channels; channel++) {
+            const currentValue = this.currentValues[channel];
+            const nextValue = this.nextValues[channel];
 
-            if (this.direction === MeterCanvasDirection.horizontal) {
-                context.rect(0, 0, this.height, this.width);
-            } else {
-                context.rect(0, 0, this.width, this.height);
-            }
+            if (nextValue === undefined || currentValue !== nextValue) {
+                const value = this.computeValue(currentValue, nextValue);
 
-            context.fillStyle = "rgb(32,32,32)";
-            context.fill();
-            context.restore();
-            context.save();
-            context.translate(this.boxSpacingX, this.boxSpacingY);
+                context.save();
+                context.beginPath();
 
-            for (let i = 0; i < this.boxes; i++) {
                 if (this.direction === MeterCanvasDirection.horizontal) {
-                    this.drawBox(context, value, this.boxes - i);
+                    context.rect(0, channel * this.channelWidth, this.channelHeight, this.channelWidth);
                 } else {
-                    this.drawBox(context, value, i);
+                    context.rect(channel * this.channelHeight, 0, this.channelWidth, this.channelHeight);
                 }
+
+                context.fillStyle = "rgb(32,32,32)";
+                context.fill();
+                context.restore();
+                context.save();
+                context.translate(this.boxSpacingX, this.boxSpacingY);
+
+                for (let i = 0; i < this.boxes; i++) {
+                    if (this.direction === MeterCanvasDirection.horizontal) {
+                        this.drawBox(context, value, this.boxes - i, 0, channel * this.channelWidth);
+                    } else {
+                        this.drawBox(context, value, i, channel * this.channelHeight, 0);
+                    }
+                }
+
+                context.restore();
+
+                this.currentValues[channel] = Math.round(1000 * value) / 1000;
             }
-
-            context.restore();
-
-            this.currentValue = Math.round(1000 * value) / 1000;
         }
     }
 
