@@ -1,5 +1,5 @@
 import React from "react";
-import {TrackView} from "./TrackView";
+import {TrackView} from "./track/TrackView";
 import {TransportControlView} from "./TransportControlView";
 import {TransportPositionUpdatedEvent} from "../../audio/transport/events/TransportPositionUpdatedEvent";
 import {Transport} from "../../audio/transport/Transport"

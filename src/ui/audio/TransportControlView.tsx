@@ -97,7 +97,13 @@ export class TransportControlView extends React.Component<TransportControlViewPr
                     <StopButton className={styles.item} disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
                 </div>
                 <div>
-                    <Meter className={styles.item} direction="horizontal" style={{display: 'inline-block'}} onUpdate={this.meterListener}/>
+                    <Meter
+                        className={styles.item}
+                        direction="horizontal"
+                        width={38}
+                        height={100}
+                        style={{display: 'inline-block'}}
+                        onUpdate={this.meterListener}/>
                 </div>
                 <div>
                     <BpmInput

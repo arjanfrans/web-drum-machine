@@ -1,10 +1,10 @@
 import React from "react";
-import {Track} from "../../audio/track/Track";
-import {TrackEvent} from "../../audio/track/events/TrackEvent";
+import {Track} from "../../../audio/track/Track";
+import {TrackEvent} from "../../../audio/track/events/TrackEvent";
 import {TrackControlView} from "./TrackControlView";
 import styles from "./TrackView.module.css"
-import {SequencerCell} from "./track/SequencerCell";
-import {Sends} from "./track/Sends";
+import {SequencerCell} from "./SequencerCell";
+import {Sends} from "./Sends";
 
 interface TrackViewProps {
     track: Track
@@ -41,7 +41,9 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
         this.props.track.emitter.on(TrackEvent, (event: TrackEvent) => {
             this.forceUpdate();
         })
+
     }
+
 
     public render() {
         const {track} = this.props;

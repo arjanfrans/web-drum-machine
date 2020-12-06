@@ -1,16 +1,18 @@
 import React from "react";
-import {Track} from "../../audio/track/Track";
-import {UpdateChannelVolumeEvent} from "../../audio/track/events/UpdateChannelVolumeEvent";
-import {SoloChannelEvent} from "../../audio/track/events/SoloChannelEvent";
-import {MuteChannelEvent} from "../../audio/track/events/MuteChannelEvent";
-import {UpdateChannelPanningEvent} from "../../audio/track/events/UpdatePanningVolumeEvent";
-import {TrackEvent} from "../../audio/track/events/TrackEvent";
-import {VolumeSlider} from "../component/VolumeSlider";
+import {Track} from "../../../audio/track/Track";
+import {UpdateChannelVolumeEvent} from "../../../audio/track/events/UpdateChannelVolumeEvent";
+import {SoloChannelEvent} from "../../../audio/track/events/SoloChannelEvent";
+import {MuteChannelEvent} from "../../../audio/track/events/MuteChannelEvent";
+import {UpdateChannelPanningEvent} from "../../../audio/track/events/UpdatePanningVolumeEvent";
+import {TrackEvent} from "../../../audio/track/events/TrackEvent";
+import {VolumeSlider} from "../../component/VolumeSlider";
 import styles from "./TrackControlView.module.css"
-import {PanningSlider} from "../component/PanningSlider";
-import {ToggleButton} from "../component/ToggleButton";
-import {SetChannelReverbEvent} from "../../audio/track/events/SetChannelReverbEvent";
-import {SetChannelChorusEvent} from "../../audio/track/events/SetChannelChorusEvent";
+import {PanningSlider} from "../../component/PanningSlider";
+import {ToggleButton} from "../../component/ToggleButton";
+import {SetChannelReverbEvent} from "../../../audio/track/events/SetChannelReverbEvent";
+import {SetChannelChorusEvent} from "../../../audio/track/events/SetChannelChorusEvent";
+import {Meter} from "../meters/Meter";
+import {TrackOutputVolumeUpdatedEvent} from "../../../audio/track/events/TrackOutputVolumeUpdatedEvent";
 
 interface TrackControlProps {
     track: Track
@@ -43,6 +45,12 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
         this.props.track.emitter.on(TrackEvent, (event: TrackEvent) => {
             this.forceUpdate();
         })
+    }
+
+    private meterListener = (updateValue: (values: number[]) => void): void => {
+        this.props.track.emitter.on(TrackOutputVolumeUpdatedEvent, (event: TrackOutputVolumeUpdatedEvent) => {
+            updateValue([event.leftVolume, event.rightVolume])
+        });
     }
 
     public render() {
@@ -101,6 +109,7 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
             });
         }
 
+
         return (
             <div className={styles.container}>
                 <div>
@@ -112,6 +121,7 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                 <div className={styles.name}>
                     {track.name}
                 </div>
+
                 <div className={styles.toggleContainer}>
                     <ToggleButton
                         onClick={soloChannel}
@@ -140,6 +150,16 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                         label={"C"}
                         activeColor={'cyan'}
                         title={"Chorus"}
+                    />
+                </div>
+                <div>
+                    <Meter
+                        className={styles.meter}
+                        direction="horizontal"
+                        width={10}
+                        height={100}
+                        style={{display: 'inline-block'}}
+                        onUpdate={this.meterListener}
                     />
                 </div>
             </div>

@@ -8,6 +8,7 @@ export class Track {
     private sequence?: Tone.Sequence;
     public readonly emitter: TrackEmitter;
     public readonly channel: Tone.Channel;
+    public readonly meter: Tone.Meter;
     public readonly effectsRack: EffectsRack;
     public readonly sends: Map<string, Tone.Gain<"decibels"> | undefined> = new Map();
 
@@ -21,9 +22,11 @@ export class Track {
         this.player = new Tone.Player(sample);
         this.channel = new Tone.Channel(-6, 0);
         this.effectsRack = new EffectsRack(this.player, this.channel);
+        this.meter = new Tone.Meter({ channels: 2, smoothing: 0.3 });
 
         this.player.connect(this.channel);
         this.channel.toDestination();
+        this.channel.connect(this.meter);
 
         this.updateSequence();
     }

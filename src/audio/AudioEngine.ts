@@ -7,13 +7,14 @@ import { Bus } from "./bus/Bus";
 import { BusFactory } from "./bus/BusFactory";
 import { TrackFactory } from "./track/TrackFactory";
 import { MasterOutputVolumeUpdatedEvent } from "./events/MasterOutputVolumeUpdatedEvent";
+import { TrackOutputVolumeUpdatedEvent } from "./track/events/TrackOutputVolumeUpdatedEvent";
 
 export class AudioEngine {
     public readonly tracks: Map<string, Track> = new Map<string, Track>();
     public readonly buses: Map<string, Bus> = new Map<string, Bus>();
     public readonly emitter: EventEmitter = new EventEmitter();
     public readonly transport: Transport;
-    public readonly outputMeter: Tone.Meter = new Tone.Meter({ channels: 2, smoothing: 0.5 });
+    public readonly outputMeter: Tone.Meter = new Tone.Meter({ channels: 2, smoothing: 0.3 });
 
     constructor(private readonly config: Config) {
         this.transport = new Transport(config);
@@ -54,6 +55,16 @@ export class AudioEngine {
                     this.emitter.emit(new MasterOutputVolumeUpdatedEvent(value[0], value[1]));
                 } else {
                     this.emitter.emit(new MasterOutputVolumeUpdatedEvent(value, value));
+                }
+
+                for (const track of this.tracks.values()) {
+                    const value = track.meter.getValue();
+
+                    if (Array.isArray(value)) {
+                        track.emitter.emit(new TrackOutputVolumeUpdatedEvent(value[0], value[1]));
+                    } else {
+                        track.emitter.emit(new TrackOutputVolumeUpdatedEvent(value, value));
+                    }
                 }
             }, time);
         }, 0.1).start(0);

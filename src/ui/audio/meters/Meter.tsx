@@ -5,6 +5,8 @@ import {MeterCanvas, MeterCanvasDirection} from "./canvas/MeterCanvas";
 type MeterProps = {
     onUpdate: (updateValue: (values: number[]) => void) => void
     direction: 'horizontal' | 'vertical'
+    width: number
+    height: number
     style: React.CSSProperties
 } & React.HTMLAttributes<HTMLDivElement>
 
@@ -15,8 +17,8 @@ export class Meter extends React.Component<MeterProps, {}> {
         super(props);
 
         this.canvas = new MeterCanvas({
-            width: 40,
-            height: 200,
+            width: props.width,
+            height: props.height,
             minValue: -48,
             maxValue: 12,
             redThreshold: 0,

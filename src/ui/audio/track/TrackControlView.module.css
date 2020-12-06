@@ -11,6 +11,10 @@
     margin-right: 10px;
 }
 
+.meter {
+    display: inline-block;
+}
+
 .center {
     text-align: center;
     align-content: center;
