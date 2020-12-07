@@ -56,24 +56,20 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
     public render() {
         const {track} = this.props;
 
-        const updateVolume = (event: React.FormEvent<HTMLInputElement>) => {
-            const volume = Number.parseInt(event.currentTarget.value);
-
-            if (volume !== track.channel.volume.value) {
-                track.emitter.emit(new UpdateChannelVolumeEvent(volume));
+        const updateVolume = (value: number) => {
+            if (value !== track.channel.volume.value) {
+                track.emitter.emit(new UpdateChannelVolumeEvent(value));
                 this.setState({
-                    volume
+                    volume: value
                 })
             }
         }
 
-        const updatePanning = (event: React.FormEvent<HTMLInputElement>) => {
-            const pan = Number.parseFloat(event.currentTarget.value);
-
-            if (pan !== track.channel.pan.value) {
-                track.emitter.emit(new UpdateChannelPanningEvent(pan));
+        const updatePanning = (value: number) => {
+            if (value !== track.channel.pan.value) {
+                track.emitter.emit(new UpdateChannelPanningEvent(value));
                 this.setState({
-                    pan
+                    pan: value
                 })
             }
         }
@@ -119,7 +115,19 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                     <PanningSlider onChange={updatePanning} value={this.state.pan}/>
                 </div>
                 <div className={styles.name}>
-                    {track.name}
+                    <div>
+                        {track.name}
+                    </div>
+                    <div>
+                        <Meter
+                            className={styles.meter}
+                            direction="horizontal"
+                            width={20}
+                            height={100}
+                            style={{display: 'inline-block'}}
+                            onUpdate={this.meterListener}
+                        />
+                    </div>
                 </div>
 
                 <div className={styles.toggleContainer}>
@@ -150,16 +158,6 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                         label={"C"}
                         activeColor={'cyan'}
                         title={"Chorus"}
-                    />
-                </div>
-                <div>
-                    <Meter
-                        className={styles.meter}
-                        direction="horizontal"
-                        width={10}
-                        height={100}
-                        style={{display: 'inline-block'}}
-                        onUpdate={this.meterListener}
                     />
                 </div>
             </div>

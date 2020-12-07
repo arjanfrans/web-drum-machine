@@ -52,12 +52,10 @@ export class Sends extends React.Component<SendsProps, SendsState> {
             sendElements.push(
                 <div key={sendName} title={`Send: ${sendName}`}>
                     <VolumeSlider
-                        onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                            const volume = Number.parseInt(event.currentTarget.value);
-
-                            this.updateSend(sendName, volume)
+                        onChange={(value: number): void => {
+                            this.updateSend(sendName, value)
                         }}
-                        defaultValue={`${sendValue.volume}`}
+                        value={sendValue.volume}
                     />
                 </div>
             )

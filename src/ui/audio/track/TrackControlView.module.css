@@ -1,10 +1,10 @@
 .container {
+    padding: 6px;
+    border: 1px solid black;
+    background-color: lightgrey;
     display: grid;
-    height: 100%;
     grid-template-columns: 1fr auto;
-    background-color: #d5d5d5;
 }
-
 .name {
     display: inline-block;
     text-align: left;
@@ -18,14 +18,4 @@
 .center {
     text-align: center;
     align-content: center;
-}
-
-.verticalRange {
-    writing-mode: bt-lr;
-    -webkit-appearance: slider-vertical;
-    width: 20px;
-    height: 150px;
-    padding: 0 24px;
-    outline: none;
-    background:transparent;
 }

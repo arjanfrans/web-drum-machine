@@ -1,5 +1,6 @@
 body {
     font-family: "Lucida Console", Courier, monospace;
+    background-color: #efefef;
 }
 
 input {
@@ -38,5 +39,4 @@ button:disabled {
 button:focus {
     outline: none;
 }
-
 

@@ -1,24 +1,19 @@
 .container {
     display: inline-block;
     vertical-align: top;
-}
-.slider {
-    -webkit-appearance: none;
-    margin-left: 4px;
-    margin-right: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 8px;
     width: 80px;
-    height: 6px;
-    border-radius: 25px;
-    background: #efefef;
-    outline: none;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-    border: 1px solid #d0d0d0;
 }
 
-.sliderTicks {
+.labels {
     display: flex;
     justify-content: space-between;
-    padding: 0 6px;
+    padding-left: 6px;
     font-size: 10px;
+}
+
+.bold {
+    font-weight: bold;
 }

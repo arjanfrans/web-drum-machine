@@ -7,6 +7,7 @@ import {UpdateChannelPanningEvent} from "../../audio/track/events/UpdatePanningV
 import {SoloChannelEvent} from "../../audio/track/events/SoloChannelEvent";
 import {MuteChannelEvent} from "../../audio/track/events/MuteChannelEvent";
 import {ToggleButton} from "../component/ToggleButton";
+import {VerticalVolumeSlider} from "../component/VerticalVolumeSlider";
 
 interface BusTrackViewProps {
     bus: Bus
@@ -34,13 +35,11 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
     public render() {
         const {bus} = this.props;
 
-        const updatePanning = (event: React.FormEvent<HTMLInputElement>) => {
-            const pan = Number.parseFloat(event.currentTarget.value);
-
-            if (pan !== bus.channel.pan.value) {
-                bus.emitter.emit(new UpdateChannelPanningEvent(pan));
+        const updatePanning = (value: number) => {
+            if (value !== bus.channel.pan.value) {
+                bus.emitter.emit(new UpdateChannelPanningEvent(value));
                 this.setState({
-                    pan
+                    pan: value
                 })
             }
         }
@@ -60,13 +59,11 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
             });
         }
 
-        const updateVolume = (event: React.FormEvent<HTMLInputElement>) => {
-            const volume = Number.parseInt(event.currentTarget.value);
-
-            if (volume !== bus.channel.volume.value) {
-                bus.emitter.emit(new UpdateChannelVolumeEvent(volume));
+        const updateVolume = (value: number) => {
+            if (value !== bus.channel.volume.value) {
+                bus.emitter.emit(new UpdateChannelVolumeEvent(value));
                 this.setState({
-                    volume
+                    volume: value
                 })
             }
         }
@@ -82,11 +79,8 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
                     <option value="0">C</option>
                     <option value="1">R</option>
                 </datalist>
-               <div className={styles.center} title="Volume">
-                    <input className={styles.verticalRange} onChange={updateVolume} type="range" step="1"
-                           min="-32"
-                           max="12"
-                           value={this.state.volume}/>
+               <div className={styles.volume} title="Volume">
+                   <VerticalVolumeSlider onChange={updateVolume} value={this.state.volume} />
                 </div>
                 <div className={styles.toggleContainer}>
                     <ToggleButton

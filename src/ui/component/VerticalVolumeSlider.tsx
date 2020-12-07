@@ -1,13 +1,13 @@
-import styles from "./VolumeSlider.module.css";
+import styles from "./VerticalVolumeSlider.module.css";
 import React from "react";
-import {HorizontalRangeSlider} from "./base/slider/HorizontalRangeSlider";
+import {VerticalRangeSlider} from "./base/slider/VerticalRangeSlider";
 
-type VolumeSliderProps = {
+type VerticalVolumeSliderProps = {
     value?: number
     onChange: (value: number) => void
 }
 
-export const VolumeSlider = ({ value, onChange}: VolumeSliderProps) => {
+export const VerticalVolumeSlider = ({ value, onChange}: VerticalVolumeSliderProps) => {
     if (value === undefined) {
         value = -32
     }
@@ -16,7 +16,7 @@ export const VolumeSlider = ({ value, onChange}: VolumeSliderProps) => {
 
     return (
         <div className={styles.container}>
-            <HorizontalRangeSlider
+            <VerticalRangeSlider
                 value={value}
                 onChange={onChange}
                 min={-32}

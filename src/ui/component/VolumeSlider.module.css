@@ -1,22 +1,27 @@
 .container {
+    position: relative;
     display: inline-block;
     vertical-align: top;
-}
-.slider {
-    margin-left: 4px;
-    margin-right: 4px;
-    height: 6px;
-    border-radius: 25px;
-    background: #efefef;
-    outline: none;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-    border: 1px solid #d0d0d0;
+    height: 30px;
 }
 
-.sliderTicks {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 6px;
+.label {
+    font-weight: bold;
     font-size: 10px;
+    position: absolute;
+    top: 18px;
+    right: 6px;
 }
+
+.labelVertical {
+    font-weight: bold;
+    font-size: 10px;
+    position: absolute;
+    top: 18px;
+    right: 0;
+}
+
+.colorRed {
+    color: darkred;
+}
+

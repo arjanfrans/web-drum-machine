@@ -1,0 +1,56 @@
+.horizontalSlider {
+    -webkit-appearance: none;
+    margin-left: 4px;
+    margin-right: 4px;
+    height: 6px;
+    max-width: 100%;
+    border-radius: 25px;
+    background: #efefef;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border: 1px solid #d0d0d0;
+    opacity: 0.7;
+}
+
+.verticalContainer {
+    padding-left: 6px;
+}
+
+.verticalSlider {
+    -webkit-appearance: none;
+    margin-left: 4px;
+    margin-right: 4px;
+    height: 6px;
+    max-height: 100%;
+    padding-right: 6px;
+    border-radius: 25px;
+    transform-origin: left;
+    background: #efefef;
+    outline: none;
+    transition: opacity .2s;
+    border: 1px solid #d0d0d0;
+    opacity: 0.7;
+    transform: rotate(270deg)  translateY(50%) translateX(-100%);
+}
+
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #9a9a9a;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 14px; /* set a specific slider handle width */
+    height: 14px; /* slider handle height */
+    background: #9a9a9a; /* green background */
+    cursor: pointer; /* cursor on hover */
+}

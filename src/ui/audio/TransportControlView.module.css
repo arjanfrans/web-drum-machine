@@ -6,6 +6,7 @@
     grid-auto-flow: column;
     align-items: center;
     align-content: start;
+    margin-bottom: 2px;
 }
 
 .item {
