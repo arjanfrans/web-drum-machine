@@ -90,13 +90,8 @@ export class MeterCanvas {
         this.width = options?.width || 20;
         this.height = options?.height || 100;
 
-        if (this.direction === MeterCanvasDirection.vertical) {
-            this.channelWidth = this.width;
-            this.channelHeight = this.height / this.channels;
-        } else {
-            this.channelWidth = this.width / this.channels;
-            this.channelHeight = this.height;
-        }
+        this.channelWidth = this.width / this.channels;
+        this.channelHeight = this.height;
 
         this.boxHeight = this.channelHeight / (this.boxes + (this.boxes + 1) * this.boxSpacing);
         this.boxSpacingY = this.boxHeight * this.boxSpacing;
@@ -206,7 +201,7 @@ export class MeterCanvas {
                 if (this.direction === MeterCanvasDirection.horizontal) {
                     context.rect(0, channel * this.channelWidth, this.channelHeight, this.channelWidth);
                 } else {
-                    context.rect(channel * this.channelHeight, 0, this.channelWidth, this.channelHeight);
+                    context.rect(channel * this.channelWidth, 0, this.channelWidth, this.channelHeight);
                 }
 
                 context.fillStyle = "rgb(32,32,32)";
@@ -219,7 +214,7 @@ export class MeterCanvas {
                     if (this.direction === MeterCanvasDirection.horizontal) {
                         this.drawBox(context, value, this.boxes - i, 0, channel * this.channelWidth);
                     } else {
-                        this.drawBox(context, value, i, channel * this.channelHeight, 0);
+                        this.drawBox(context, value, i, channel * this.channelWidth, 0);
                     }
                 }
 

@@ -4,6 +4,7 @@ import { BusEmitter } from "./BusEmitter";
 
 export class Bus {
     public readonly channel: Tone.Channel;
+    public readonly meter: Tone.Meter;
     public readonly effectsRack: EffectsRack;
     public readonly emitter: BusEmitter;
 
@@ -12,6 +13,8 @@ export class Bus {
         this.channel = new Tone.Channel(0, 0);
         this.channel.receive(id);
         this.channel.toDestination();
+        this.meter = new Tone.Meter({ channels: 2, smoothing: 0.3 });
+        this.channel.connect(this.meter);
         this.effectsRack = new EffectsRack(this.channel, this.channel.context.destination);
     }
 }

@@ -12,6 +12,14 @@
     background-color: lightgrey;
 }
 
+.meter {
+    position: absolute;
+    left: 15px;
+    top: 72px;
+    display: inline-block;
+}
+
+
 .container:first-child {
     border-left: 1px;
     border-style: solid;

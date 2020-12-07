@@ -8,6 +8,8 @@ import {SoloChannelEvent} from "../../audio/track/events/SoloChannelEvent";
 import {MuteChannelEvent} from "../../audio/track/events/MuteChannelEvent";
 import {ToggleButton} from "../component/ToggleButton";
 import {VerticalVolumeSlider} from "../component/VerticalVolumeSlider";
+import {Meter} from "./meters/Meter";
+import {TrackOutputVolumeUpdatedEvent} from "../../audio/track/events/TrackOutputVolumeUpdatedEvent";
 
 interface BusTrackViewProps {
     bus: Bus
@@ -30,6 +32,12 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
             solo: props.bus.channel.solo,
             mute: props.bus.channel.mute,
         }
+    }
+
+    private meterListener = (updateValue: (values: number[]) => void): void => {
+        this.props.bus.emitter.on(TrackOutputVolumeUpdatedEvent, (event: TrackOutputVolumeUpdatedEvent) => {
+            updateValue([event.leftVolume, event.rightVolume])
+        });
     }
 
     public render() {
@@ -74,12 +82,16 @@ export class BusTrackView extends React.Component<BusTrackViewProps, BusTrackVie
                     value={this.state.pan}
                     onChange={updatePanning}
                 />
-                <datalist id="tickmarks" className={styles.sliderticks}>
-                    <option value="-1">L</option>
-                    <option value="0">C</option>
-                    <option value="1">R</option>
-                </datalist>
-               <div className={styles.volume} title="Volume">
+                <div className={styles.meter}>
+                    <Meter
+                        direction="vertical"
+                        width={20}
+                        height={110}
+                        style={{display: 'inline-block'}}
+                        onUpdate={this.meterListener}
+                    />
+                </div>
+                <div className={styles.volume} title="Volume">
                    <VerticalVolumeSlider onChange={updateVolume} value={this.state.volume} />
                 </div>
                 <div className={styles.toggleContainer}>

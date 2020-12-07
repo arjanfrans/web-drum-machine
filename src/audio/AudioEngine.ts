@@ -66,6 +66,16 @@ export class AudioEngine {
                         track.emitter.emit(new TrackOutputVolumeUpdatedEvent(value, value));
                     }
                 }
+
+                for (const bus of this.buses.values()) {
+                    const value = bus.meter.getValue();
+
+                    if (Array.isArray(value)) {
+                        bus.emitter.emit(new TrackOutputVolumeUpdatedEvent(value[0], value[1]));
+                    } else {
+                        bus.emitter.emit(new TrackOutputVolumeUpdatedEvent(value, value));
+                    }
+                }
             }, time);
         }, 0.1).start(0);
 

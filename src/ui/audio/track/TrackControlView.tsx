@@ -123,7 +123,7 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                             className={styles.meter}
                             direction="horizontal"
                             width={20}
-                            height={100}
+                            height={140}
                             style={{display: 'inline-block'}}
                             onUpdate={this.meterListener}
                         />
