@@ -1,8 +1,9 @@
 # Web Drum Machine
 
+## Demo
 Try it out: [web-drum-machine.arjanfrans.com](https://web-drum-machine.arjanfrans.com/)
 
-![Version 0.0.1-dev.5](./.github/media/version_0.0.1-dev.5.png)
+![Version 0.0.1-dev.6](./.github/media/version_0.0.1-dev.6.png)
 
 
 ### Development
