@@ -1,6 +1,6 @@
 {
   "name": "web-drum-machine",
-  "version": "0.0.1-dev.5",
+  "version": "0.0.1-dev.6",
   "license": "MIT",
   "private": true,
   "dependencies": {
