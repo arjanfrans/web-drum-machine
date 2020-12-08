@@ -1,9 +1,6 @@
 .container {
     display: inline-block;
     vertical-align: top;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-bottom: 8px;
     width: 80px;
 }
 

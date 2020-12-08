@@ -1,0 +1,24 @@
+.meter {
+    position: absolute;
+    left: 15px;
+    top: 72px;
+    display: inline-block;
+}
+
+.volume {
+    height: 150px;
+    width: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    align-content: center;
+}
+
+.toggleContainer {
+    display: inline-grid;
+    column-count: 1;
+    position: absolute;
+    top: 40px;
+    left: 10px
+}
+

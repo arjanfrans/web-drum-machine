@@ -13,13 +13,22 @@ interface MixerViewProps {
 }
 
 export class Mixer extends React.Component<MixerViewProps, {}> {
+    private updateActiveTab = (tab: string) => {
+    }
+
     public render() {
         const busTracks = this.props.buses.map((bus: Bus) => {
             return <BusTrackView key={bus.id} bus={bus}/>;
         });
 
         const tracks = this.props.tracks.map((track: Track) => {
-            return <VerticalTrackControl key={track.id} track={track}/>;
+            return (
+                <VerticalTrackControl
+                    updateActiveTab={this.updateActiveTab.bind(this)}
+                    key={track.id}
+                    track={track}
+                />
+            );
         });
 
         return (

@@ -1,125 +1,82 @@
 import React from "react";
-import {UpdateChannelVolumeEvent} from "../../../audio/track/events/UpdateChannelVolumeEvent";
 import styles from "./VerticalTrackControl.module.css"
-import {PanningSlider} from "../../component/PanningSlider";
-import {UpdateChannelPanningEvent} from "../../../audio/track/events/UpdatePanningVolumeEvent";
-import {SoloChannelEvent} from "../../../audio/track/events/SoloChannelEvent";
-import {MuteChannelEvent} from "../../../audio/track/events/MuteChannelEvent";
-import {ToggleButton} from "../../component/ToggleButton";
-import {VerticalVolumeSlider} from "../../component/VerticalVolumeSlider";
-import {Meter} from "../meters/Meter";
-import {TrackOutputVolumeUpdatedEvent} from "../../../audio/track/events/TrackOutputVolumeUpdatedEvent";
 import {Track} from "../../../audio/track/Track";
-import {TrackEffects} from "./TrackEffects";
-import {Sends} from "./Sends";
+import {EffectsTab} from "./control-tabs/EffectsTab";
+import {SendsTab} from "./control-tabs/SendsTab";
+import {ControlTab} from "./control-tabs/ControlTab";
+import {Keyboard} from "../../Keyboard";
 
 interface VerticalTrackControlProps {
     track: Track
+    updateActiveTab: (tab: string) => void
 }
 
 interface VerticalTrackControlState {
-    volume: number
-    pan: number;
-    solo: boolean
-    mute: boolean
+    activeTab: string
 }
 
 export class VerticalTrackControl extends React.Component<VerticalTrackControlProps, VerticalTrackControlState> {
+    public static TABS = ["CTL", "EFX", "SND"]
+
     constructor(props: VerticalTrackControlProps) {
         super(props);
 
         this.state = {
-            pan: props.track.channel.pan.value,
-            volume: props.track.channel.volume.value,
-            solo: props.track.channel.solo,
-            mute: props.track.channel.mute,
+            activeTab: VerticalTrackControl.TABS[0]
         }
     }
 
-    private meterListener = (updateValue: (values: number[]) => void): void => {
-        this.props.track.emitter.on(TrackOutputVolumeUpdatedEvent, (event: TrackOutputVolumeUpdatedEvent) => {
-            updateValue([event.leftVolume, event.rightVolume])
-        });
+
+    private changeTab(tab: string): void {
+        this.setState({
+            activeTab: tab
+        })
+    }
+
+    private renderTabButton(name: string)
+    {
+        return (
+            <button
+                className={`${(this.state.activeTab === name ? styles.activeTab : '')} ${styles.tabButton}`}
+                onClick={() => {
+                    if (Keyboard.isShiftDown()) {
+                        this.props.updateActiveTab(name)
+                    } else {
+                        this.changeTab(name)
+                    }
+                }}
+            >
+                {name}
+            </button>
+        )
     }
 
     public render() {
-        const {track} = this.props;
+        const {track} = this.props
+        const {activeTab } = this.state
 
-        const updatePanning = (value: number) => {
-            if (value !== track.channel.pan.value) {
-                track.emitter.emit(new UpdateChannelPanningEvent(value));
-                this.setState({
-                    pan: value
-                })
-            }
-        }
+        let tab = null;
 
-        const soloChannel = () => {
-            track.emitter.emit(new SoloChannelEvent(!track.channel.solo));
-            this.setState({
-                solo: !this.state.solo
-            })
-        }
-
-        const muteChannel = () => {
-            track.emitter.emit(new MuteChannelEvent(!track.channel.mute));
-
-            this.setState({
-                mute: !this.state.mute
-            });
-        }
-
-        const updateVolume = (value: number) => {
-            if (value !== track.channel.volume.value) {
-                track.emitter.emit(new UpdateChannelVolumeEvent(value));
-                this.setState({
-                    volume: value
-                })
-            }
+        if (activeTab === VerticalTrackControl.TABS[0]) {
+            tab = <div className={styles.tab}><ControlTab track={track}/></div>
+        } else if (activeTab === VerticalTrackControl.TABS[1]) {
+            tab = <div className={styles.tab}><EffectsTab track={track}/></div>
+        } else {
+            tab = <div className={styles.tab}><SendsTab track={track}/></div>
         }
 
         return (
             <div className={styles.container}>
-                <div className={styles.sends}>
-                    <Sends track={track}/>
+                <div className={styles.tabs}>
+                    {this.renderTabButton(VerticalTrackControl.TABS[0])}
+                    {this.renderTabButton(VerticalTrackControl.TABS[1])}
+                    {this.renderTabButton(VerticalTrackControl.TABS[2])}
                 </div>
-                <div className={styles.effects}>
-                    <TrackEffects track={track}/>
+                <div>
+                    {tab}
                 </div>
-                <div className={styles.controls}>
-                    <PanningSlider
-                        value={this.state.pan}
-                        onChange={updatePanning}
-                    />
-                    <div className={styles.meter}>
-                        <Meter
-                            direction="vertical"
-                            width={20}
-                            height={110}
-                            style={{display: 'inline-block'}}
-                            onUpdate={this.meterListener}
-                        />
-                    </div>
-                    <div className={styles.volume} title="Volume">
-                       <VerticalVolumeSlider onChange={updateVolume} value={this.state.volume} />
-                    </div>
-                    <div className={styles.toggleContainer}>
-                        <ToggleButton
-                            onClick={soloChannel}
-                            isActive={!this.state.solo}
-                            activeColor={'goldenrod'}
-                            label="S"
-                        />
-                        <ToggleButton
-                            onClick={muteChannel}
-                            isActive={!this.state.mute}
-                            activeColor={'darkred'}
-                            label="M"
-                        />
-                    </div>
-                    <div className={styles.name}>
-                        {track.name}
-                    </div>
+                <div className={styles.name}>
+                    {track.name}
                 </div>
             </div>
         );

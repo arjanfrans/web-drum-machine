@@ -1,18 +1,18 @@
 import React from "react";
-import {Track} from "../../../audio/track/Track";
-import {ToggleButton} from "../../component/ToggleButton";
-import {EnableTrackEffectEvent} from "../../../audio/track/events/EnableTrackEffectEvent";
+import {Track} from "../../../../audio/track/Track";
+import {ToggleButton} from "../../../component/ToggleButton";
+import {EnableTrackEffectEvent} from "../../../../audio/track/events/EnableTrackEffectEvent";
 
-type TrackEffectsProps = {
+type EffectsTabProps = {
     track: Track
 }
 
-type TrackEffectsState = {
+type EffectsTabState = {
     effects: { [key: string]: boolean}
 }
 
-export class TrackEffects extends React.Component<TrackEffectsProps, TrackEffectsState> {
-    constructor(props: TrackEffectsProps) {
+export class EffectsTab extends React.Component<EffectsTabProps, EffectsTabState> {
+    constructor(props: EffectsTabProps) {
         super(props);
 
         const effects: { [key: string]: boolean } = {};

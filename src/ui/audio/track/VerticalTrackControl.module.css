@@ -1,5 +1,6 @@
 .container {
     background-color: lightgrey;
+    vertical-align: top;
     margin-top: 2px;
     display: inline-block;
     padding: 2px;
@@ -9,28 +10,29 @@
     border-left: 0;
     border-color: black;
     border-style: solid;
+    width: 92px;
 }
 
-.effects {
+.tabs {
+    display: grid;
+    grid-gap: 4px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.tabButton {
+    font-size: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.activeTab {
+    background-color: #ff8981;
+}
+
+.tab {
+    padding: 4px;
     position: relative;
 }
-
-.controls {
-    position: relative;
-}
-
-.sends {
-    position: relative;
-}
-
-
-.meter {
-    position: absolute;
-    left: 15px;
-    top: 72px;
-    display: inline-block;
-}
-
 
 .container:first-child {
     border-left: 1px;
@@ -38,23 +40,8 @@
 }
 
 .name {
+    margin-top: auto;
     text-align: center;
 }
 
-.volume {
-    height: 150px;
-    width: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    align-content: center;
-}
-
-.toggleContainer {
-    display: inline-grid;
-    column-count: 1;
-    position: absolute;
-    top: 40px;
-    left: 10px
-}
 

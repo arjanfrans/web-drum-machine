@@ -1,24 +1,24 @@
 import React from "react";
-import {Track} from "../../../audio/track/Track";
-import {UpdateSendVolumeEvent} from "../../../audio/track/events/UpdateSendVolumeEvent";
-import {VolumeSlider} from "../../component/VolumeSlider";
-import styles from "./Sends.module.css"
+import {Track} from "../../../../audio/track/Track";
+import {UpdateSendVolumeEvent} from "../../../../audio/track/events/UpdateSendVolumeEvent";
+import {VolumeSlider} from "../../../component/VolumeSlider";
+import styles from "./SendsTab.module.css"
 
 interface SendValue {
     volume?: number
 }
 
-interface SendsProps {
+interface SendsTabsProps {
     track: Track
 }
 
-interface SendsState {
+interface SendsTabsState {
     sends: Map<string, SendValue>
 }
 
 
-export class Sends extends React.Component<SendsProps, SendsState> {
-    constructor(props: SendsProps) {
+export class SendsTab extends React.Component<SendsTabsProps, SendsTabsState> {
+    constructor(props: SendsTabsProps) {
         super(props);
 
         const sends = new Map<string, SendValue>();
@@ -51,12 +51,17 @@ export class Sends extends React.Component<SendsProps, SendsState> {
         for (const [sendName, sendValue] of this.state.sends.entries()) {
             sendElements.push(
                 <div key={sendName} title={`Send: ${sendName}`}>
-                    <VolumeSlider
-                        onChange={(value: number): void => {
-                            this.updateSend(sendName, value)
-                        }}
-                        value={sendValue.volume}
-                    />
+                    <div className={styles.sendLabel}>
+                        {sendName}
+                    </div>
+                    <div className={styles.volumeSlider}>
+                        <VolumeSlider
+                            onChange={(value: number): void => {
+                                this.updateSend(sendName, value)
+                            }}
+                            value={sendValue.volume}
+                        />
+                    </div>
                 </div>
             )
         }
