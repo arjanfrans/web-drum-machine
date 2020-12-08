@@ -6,29 +6,25 @@ import {MuteChannelEvent} from "../../../audio/track/events/MuteChannelEvent";
 import {UpdateChannelPanningEvent} from "../../../audio/track/events/UpdatePanningVolumeEvent";
 import {TrackEvent} from "../../../audio/track/events/TrackEvent";
 import {VolumeSlider} from "../../component/VolumeSlider";
-import styles from "./TrackControlView.module.css"
+import styles from "./HorizontalTrackControl.module.css"
 import {PanningSlider} from "../../component/PanningSlider";
 import {ToggleButton} from "../../component/ToggleButton";
-import {SetChannelReverbEvent} from "../../../audio/track/events/SetChannelReverbEvent";
-import {SetChannelChorusEvent} from "../../../audio/track/events/SetChannelChorusEvent";
 import {Meter} from "../meters/Meter";
 import {TrackOutputVolumeUpdatedEvent} from "../../../audio/track/events/TrackOutputVolumeUpdatedEvent";
 
-interface TrackControlProps {
+interface HorizontalTrackControlProps {
     track: Track
 }
 
-interface TrackControlState {
+interface HorizontalTrackControlState {
     volume: number
     pan: number;
     solo: boolean
     mute: boolean
-    enableReverb: boolean
-    enableChorus: boolean
 }
 
-export class TrackControlView extends React.Component<TrackControlProps, TrackControlState> {
-    constructor(props: TrackControlProps) {
+export class HorizontalTrackControl extends React.Component<HorizontalTrackControlProps, HorizontalTrackControlState> {
+    constructor(props: HorizontalTrackControlProps) {
         super(props);
 
         this.state = {
@@ -36,8 +32,6 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
             volume: props.track.channel.volume.value,
             solo: props.track.channel.solo,
             mute: props.track.channel.mute,
-            enableReverb: props.track.effectsRack.isEnabled("reverb"),
-            enableChorus: props.track.effectsRack.isEnabled("chorus")
         }
     }
 
@@ -89,23 +83,6 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
             });
         }
 
-        const enableReverb = () => {
-            track.emitter.emit(new SetChannelReverbEvent(!this.state.enableReverb));
-
-            this.setState({
-                enableReverb: !this.state.enableReverb
-            });
-        }
-
-        const enableChorus = () => {
-            track.emitter.emit(new SetChannelChorusEvent(!this.state.enableChorus));
-
-            this.setState({
-                enableChorus: !this.state.enableChorus
-            });
-        }
-
-
         return (
             <div className={styles.container}>
                 <div>
@@ -144,20 +121,6 @@ export class TrackControlView extends React.Component<TrackControlProps, TrackCo
                         activeColor={'darkred'}
                         label="M"
                         title={"Mute"}
-                    />
-                    <ToggleButton
-                        onClick={enableReverb}
-                        isActive={!this.state.enableReverb}
-                        label={"R"}
-                        activeColor={'darkgreen'}
-                        title={"Reverb"}
-                    />
-                    <ToggleButton
-                        onClick={enableChorus}
-                        isActive={!this.state.enableChorus}
-                        label={"C"}
-                        activeColor={'cyan'}
-                        title={"Chorus"}
                     />
                 </div>
             </div>

@@ -1,7 +1,6 @@
 .container {
-    background-color: beige;
+    background-color: lightgrey;
     margin-top: 2px;
-    position: relative;
     display: inline-block;
     padding: 2px;
     border-top: 1px;
@@ -11,6 +10,19 @@
     border-color: black;
     border-style: solid;
 }
+
+.effects {
+    position: relative;
+}
+
+.controls {
+    position: relative;
+}
+
+.sends {
+    position: relative;
+}
+
 
 .meter {
     position: absolute;

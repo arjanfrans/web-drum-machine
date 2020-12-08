@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 
-interface EffectConnection {
+export interface EffectConnection {
     name: string;
     enabled: boolean;
     node: Tone.ToneAudioNode;
@@ -12,16 +12,17 @@ const INPUT_NAME = "_input";
 const OUTPUT_NAME = "_output";
 
 export class EffectsRack {
-    private readonly effects: Map<string, EffectConnection> = new Map<string, EffectConnection>();
+    private readonly connections: Map<string, EffectConnection> = new Map<string, EffectConnection>();
+    public readonly effects: Map<string, EffectConnection> = new Map<string, EffectConnection>();
 
     constructor(private readonly inputNode: Tone.ToneAudioNode, private readonly outputNode: Tone.ToneAudioNode) {
-        this.effects.set(INPUT_NAME, {
+        this.connections.set(INPUT_NAME, {
             name: INPUT_NAME,
             node: inputNode,
             output: OUTPUT_NAME,
             enabled: true,
         });
-        this.effects.set(OUTPUT_NAME, {
+        this.connections.set(OUTPUT_NAME, {
             name: OUTPUT_NAME,
             node: outputNode,
             input: INPUT_NAME,
@@ -30,7 +31,7 @@ export class EffectsRack {
     }
 
     public isEnabled(name: string): boolean {
-        const effect = this.effects.get(name);
+        const effect = this.connections.get(name);
 
         return effect ? effect.enabled : false;
     }
@@ -44,13 +45,17 @@ export class EffectsRack {
         inputConnection.node.connect(effect);
         effect.connect(outputConnection.node);
 
-        this.effects.set(inputConnection.name, { ...inputConnection, output: connection.name });
-        this.effects.set(outputConnection.name, { ...outputConnection, input: connection.name });
-        this.effects.set(name, { ...connection, input: inputConnection.name, output: outputConnection.name });
+        this.connections.set(inputConnection.name, { ...inputConnection, output: connection.name });
+        this.connections.set(outputConnection.name, { ...outputConnection, input: connection.name });
+
+        const effectConnection = { ...connection, input: inputConnection.name, output: outputConnection.name };
+
+        this.connections.set(name, effectConnection);
+        this.effects.set(name, effectConnection);
     }
 
     public disableEffect(name: string): void {
-        const connection = this.effects.get(name);
+        const connection = this.connections.get(name);
 
         if (!connection) {
             throw new Error("No connection found.");
@@ -64,12 +69,13 @@ export class EffectsRack {
             inputConnection.node.disconnect(connection.node);
             inputConnection.node.connect(outputConnection.node);
 
+            this.connections.set(name, { ...connection, enabled: false });
             this.effects.set(name, { ...connection, enabled: false });
         }
     }
 
     public enableEffect(name: string): void {
-        const connection = this.effects.get(name);
+        const connection = this.connections.get(name);
 
         if (!connection) {
             throw new Error("No connection found.");
@@ -83,12 +89,13 @@ export class EffectsRack {
             inputConnection.node.connect(connection.node);
             connection.node.connect(outputConnection.node);
 
+            this.connections.set(name, { ...connection, enabled: true });
             this.effects.set(name, { ...connection, enabled: true });
         }
     }
 
     private findNextInputConnection(connection: EffectConnection): EffectConnection {
-        const inputConnection = this.effects.get(connection.input || INPUT_NAME);
+        const inputConnection = this.connections.get(connection.input || INPUT_NAME);
 
         if (!inputConnection) {
             throw new Error("No input connection found.");
@@ -102,7 +109,7 @@ export class EffectsRack {
     }
 
     private findNextOutputConnection(connection: EffectConnection): EffectConnection {
-        const outputConnection = this.effects.get(connection.output || OUTPUT_NAME);
+        const outputConnection = this.connections.get(connection.output || OUTPUT_NAME);
 
         if (!outputConnection) {
             throw new Error("No output connection found.");

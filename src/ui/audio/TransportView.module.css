@@ -1,6 +1,6 @@
 .transportGrid {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr;
     column-gap: 2px;
     row-gap: 2px;
 }

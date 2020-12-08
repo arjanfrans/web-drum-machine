@@ -4,7 +4,7 @@ import './index.css';
 import {TransportView} from "./ui/audio/TransportView";
 import {AudioEngine} from "./audio/AudioEngine";
 import {CONFIG} from "./config";
-import {MixerView} from "./ui/audio/MixerView";
+import {Mixer} from "./ui/audio/Mixer";
 
 const version = process.env.REACT_APP_VERSION
 
@@ -57,7 +57,11 @@ export class Jukebox extends React.Component<{}, JukeboxState> {
                 tracks={[...this.state.engine.tracks.values()]}
                 audioEngine={this.state.engine}
             />
-            <MixerView buses={[...this.state.engine.buses.values()]} audioEngine={this.state.engine} />
+            <Mixer
+                buses={[...this.state.engine.buses.values()]}
+                tracks={[...this.state.engine.tracks.values()]}
+                audioEngine={this.state.engine}
+            />
         </>
     }
 }

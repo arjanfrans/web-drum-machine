@@ -1,10 +1,9 @@
 import React from "react";
 import {Track} from "../../../audio/track/Track";
 import {TrackEvent} from "../../../audio/track/events/TrackEvent";
-import {TrackControlView} from "./TrackControlView";
 import styles from "./TrackView.module.css"
 import {SequencerCell} from "./SequencerCell";
-import {Sends} from "./Sends";
+import {TrackLabel} from "./TrackLabel";
 
 interface TrackViewProps {
     track: Track
@@ -54,14 +53,9 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
 
         return (
             <>
-                <div>
-                    <TrackControlView track={track}/>
-                </div>
+                <TrackLabel name={track.name}/>
                 <div className={styles.trackGrid} style={{'gridTemplateColumns': `repeat(${columns.length}, 1fr)`}}>
                     {columns}
-                </div>
-                <div>
-                    <Sends track={track}/>
                 </div>
             </>)
             ;

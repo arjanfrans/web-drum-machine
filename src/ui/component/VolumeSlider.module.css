@@ -3,6 +3,7 @@
     display: inline-block;
     vertical-align: top;
     height: 30px;
+    max-width: 100%;
 }
 
 .label {

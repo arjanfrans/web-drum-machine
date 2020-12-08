@@ -10,8 +10,9 @@ Try it out: [web-drum-machine.arjanfrans.com](https://web-drum-machine.arjanfran
 
 Installation & running:
 
-1. `npm install`
-2. `npm start`
+1. Install [Node.js](https://nodejs.org/)
+2. `npm install`
+3. `npm start`
 
 Tools:
 * Do a production build and run it on a local server: `npm run start:production`

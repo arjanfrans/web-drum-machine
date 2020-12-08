@@ -1,0 +1,7 @@
+.container {
+    writing-mode: vertical-rl;
+    border: 1px solid black;
+    display: inline-block;
+    text-align: center;
+    background-color: lightgrey
+}

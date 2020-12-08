@@ -6,9 +6,8 @@ import { UpdateChannelVolumeEvent } from "./events/UpdateChannelVolumeEvent";
 import { UpdateChannelPanningEvent } from "./events/UpdatePanningVolumeEvent";
 import { SoloChannelEvent } from "./events/SoloChannelEvent";
 import { MuteChannelEvent } from "./events/MuteChannelEvent";
-import { SetChannelReverbEvent } from "./events/SetChannelReverbEvent";
-import { SetChannelChorusEvent } from "./events/SetChannelChorusEvent";
 import { UpdateSendVolumeEvent } from "./events/UpdateSendVolumeEvent";
+import { EnableTrackEffectEvent } from "./events/EnableTrackEffectEvent";
 
 export class TrackEmitter extends EventEmitter {
     constructor(private readonly track: Track) {
@@ -40,19 +39,11 @@ export class TrackEmitter extends EventEmitter {
             this.emit(new TrackEvent(this.track));
         });
 
-        this.on(SetChannelReverbEvent, (event: SetChannelReverbEvent) => {
+        this.on(EnableTrackEffectEvent, (event: EnableTrackEffectEvent) => {
             if (event.enable) {
-                track.effectsRack.enableEffect("reverb");
+                track.effectsRack.enableEffect(event.effect);
             } else {
-                track.effectsRack.disableEffect("reverb");
-            }
-        });
-
-        this.on(SetChannelChorusEvent, (event: SetChannelChorusEvent) => {
-            if (event.enable) {
-                track.effectsRack.enableEffect("chorus");
-            } else {
-                track.effectsRack.disableEffect("chorus");
+                track.effectsRack.disableEffect(event.effect);
             }
         });
 

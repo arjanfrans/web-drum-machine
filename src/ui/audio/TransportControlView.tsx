@@ -101,7 +101,7 @@ export class TransportControlView extends React.Component<TransportControlViewPr
                         className={styles.item}
                         direction="horizontal"
                         width={38}
-                        height={100}
+                        height={200}
                         style={{display: 'inline-block'}}
                         onUpdate={this.meterListener}/>
                 </div>
