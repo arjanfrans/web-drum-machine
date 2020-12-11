@@ -3,7 +3,7 @@ import { Bus } from "../bus/Bus";
 
 export class Send {
     public readonly channel: Tone.Channel;
-    private enabled: boolean = true;
+    private enabled: boolean = false;
 
     constructor(private readonly fromChannel: Tone.Channel, toBus: Bus) {
         this.channel = new Tone.Channel({
@@ -11,6 +11,8 @@ export class Send {
         });
         fromChannel.connect(this.channel);
         this.channel.connect(toBus.channel);
+
+        this.disable();
     }
 
     set volume(value: number) {
