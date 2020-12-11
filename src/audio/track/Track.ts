@@ -1,7 +1,8 @@
 import * as Tone from "tone";
 import { EffectsRack } from "../EffectsRack";
-import { Decibels } from "tone/Tone/core/type/Units";
 import { TrackEmitter } from "./TrackEmitter";
+import { Bus } from "../bus/Bus";
+import { Send } from "./Send";
 
 export class Track {
     public readonly player: Tone.Player;
@@ -10,13 +11,14 @@ export class Track {
     public readonly channel: Tone.Channel;
     public readonly meter: Tone.Meter;
     public readonly effectsRack: EffectsRack;
-    public readonly sends: Map<string, Tone.Gain<"decibels"> | undefined> = new Map();
+    public readonly sends: Map<string, Send> = new Map();
 
     constructor(
         public readonly id: string,
         public name: string,
         private sample: string,
-        public readonly sequenceNotes: boolean[]
+        public readonly sequenceNotes: boolean[],
+        private readonly buses: Map<string, Bus>
     ) {
         this.emitter = new TrackEmitter(this);
         this.player = new Tone.Player(sample);
@@ -31,24 +33,40 @@ export class Track {
         this.updateSequence();
     }
 
-    public send(bus: string, volume?: Decibels): void {
-        let sendKnob = this.sends.get(bus);
+    set mute(value: boolean) {
+        this.channel.mute = value;
+    }
 
-        if (!sendKnob) {
-            sendKnob = this.channel.send(bus, volume);
+    set solo(value: boolean) {
+        this.channel.solo = value;
 
-            this.sends.set(bus, sendKnob);
-        }
-
-        if (volume !== undefined) {
-            sendKnob.gain.value = volume;
-        } else {
-            sendKnob.gain.value = -32;
+        for (const send of this.sends.values()) {
+            send.channel.solo = value;
         }
     }
 
-    public getSend(bus: string): Tone.Gain<"decibels"> | undefined {
-        return this.sends.get(bus);
+    public addSend(busName: string): Send {
+        const bus = this.buses.get(busName);
+
+        if (!bus) {
+            throw new Error(`Bus ${busName} not found.`);
+        }
+
+        const send = new Send(this.channel, bus);
+
+        this.sends.set(busName, send);
+
+        return send;
+    }
+
+    public getSend(busName: string): Send {
+        const send = this.sends.get(busName);
+
+        if (!send) {
+            throw new Error(`Send ${busName} is not added to this track.`);
+        }
+
+        return send;
     }
 
     private updateSequence(): void {

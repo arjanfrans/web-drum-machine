@@ -1,9 +1,16 @@
 import { Track } from "./Track";
 import * as Tone from "tone";
+import { Bus } from "../bus/Bus";
 
 export class TrackFactory {
-    public static createTrack(id: string, name: string, sample: string, sequenceNotes: boolean[]): Track {
-        const track = new Track(id, name, sample, sequenceNotes);
+    public static createTrack(
+        id: string,
+        name: string,
+        sample: string,
+        sequenceNotes: boolean[],
+        buses: Map<string, Bus>
+    ): Track {
+        const track = new Track(id, name, sample, sequenceNotes, buses);
 
         const autoWah = new Tone.AutoWah(50, 6, -30);
 
@@ -24,6 +31,10 @@ export class TrackFactory {
         const distortion = new Tone.Distortion({
             distortion: 0.8,
         });
+
+        track.addSend("reverb");
+        track.addSend("chorus");
+        track.addSend("delay");
 
         track.effectsRack.add("autoWah", autoWah);
         track.effectsRack.add("distortion", distortion);

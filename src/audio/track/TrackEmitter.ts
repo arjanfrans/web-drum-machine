@@ -8,6 +8,8 @@ import { SoloChannelEvent } from "./events/SoloChannelEvent";
 import { MuteChannelEvent } from "./events/MuteChannelEvent";
 import { UpdateSendVolumeEvent } from "./events/UpdateSendVolumeEvent";
 import { EnableTrackEffectEvent } from "./events/EnableTrackEffectEvent";
+import { EnableSendEvent } from "./events/EnableSendEvent";
+import { DisableSendEvent } from "./events/DisableSendEvent";
 
 export class TrackEmitter extends EventEmitter {
     constructor(private readonly track: Track) {
@@ -28,13 +30,13 @@ export class TrackEmitter extends EventEmitter {
         });
 
         this.on(SoloChannelEvent, (event: SoloChannelEvent) => {
-            track.channel.solo = event.solo;
+            track.solo = event.solo;
 
             this.emit(new TrackEvent(this.track));
         });
 
         this.on(MuteChannelEvent, (event: MuteChannelEvent) => {
-            track.channel.mute = event.mute;
+            track.mute = event.mute;
 
             this.emit(new TrackEvent(this.track));
         });
@@ -48,7 +50,21 @@ export class TrackEmitter extends EventEmitter {
         });
 
         this.on(UpdateSendVolumeEvent, (event: UpdateSendVolumeEvent) => {
-            track.send(event.bus, event.volume);
+            const send = track.getSend(event.bus);
+
+            send.volume = event.volume;
+        });
+
+        this.on(EnableSendEvent, (event: EnableSendEvent) => {
+            const send = track.getSend(event.bus);
+
+            send.enable();
+        });
+
+        this.on(DisableSendEvent, (event: DisableSendEvent) => {
+            const send = track.getSend(event.bus);
+
+            send.disable();
         });
     }
 }

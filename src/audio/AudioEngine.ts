@@ -32,12 +32,9 @@ export class AudioEngine {
                 trackData.id,
                 trackData.name,
                 trackData.sample,
-                trackData.sequenceNotes
+                trackData.sequenceNotes,
+                this.buses
             );
-
-            track.send("chorus");
-            track.send("reverb");
-            track.send("delay");
 
             this.tracks.set(trackData.id, track);
         }

@@ -18,8 +18,6 @@ interface TrackViewState {
     pan: number;
     solo: boolean
     mute: boolean
-    enableReverb: boolean
-    enableChorus: boolean
 }
 
 export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
@@ -31,8 +29,6 @@ export class TrackView extends React.Component<TrackViewProps, TrackViewState> {
             volume: props.track.channel.volume.value,
             solo: props.track.channel.solo,
             mute: props.track.channel.mute,
-            enableReverb: props.track.effectsRack.isEnabled("reverb"),
-            enableChorus: props.track.effectsRack.isEnabled("chorus")
         }
     }
 
