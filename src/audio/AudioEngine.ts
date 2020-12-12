@@ -76,6 +76,6 @@ export class AudioEngine {
             }, time);
         }, 0.1).start(0);
 
-        this.transport.init();
+        await this.transport.init();
     }
 }
