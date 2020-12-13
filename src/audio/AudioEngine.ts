@@ -17,7 +17,6 @@ export class AudioEngine {
     public readonly tracks: Map<string, Track> = new Map<string, Track>()
     public readonly buses: Map<string, Bus> = new Map<string, Bus>()
     public readonly transport: Transport
-    private outputBuffer?: Tone.ToneAudioBuffer
 
     constructor(private readonly config: Config) {
         this.transport = new Transport(config)
@@ -39,12 +38,10 @@ export class AudioEngine {
         this.createBuses()
         this.createTracks()
 
-        await Tone.loaded()
         await Tone.start()
+        await Tone.loaded()
 
-        this.outputBuffer = await Tone.Offline(() => {
-            this.startSequenceLoop()
-        }, Settings.offlineBufferLength)
+        this.startSequenceLoop()
 
         this.startSequenceDrawLoop()
         this.startDrawLoop()

@@ -5,7 +5,6 @@ import './index.css';
 import {AudioEngine} from "./audio/AudioEngine";
 import {CONFIG} from "./config";
 import {DrumMachine} from "./ui/DrumMachine";
-import * as Tone from "tone"
 import {Footer} from "./ui/Footer";
 
 log(`Starting app: ${process.env.REACT_APP_NAME}`);
@@ -52,24 +51,16 @@ class App extends React.Component<AppProps, AppState> {
         return (
             <>
                 <DrumMachine engine={this.state.engine}/>
-                <Footer/>
             </>
         );
     }
 }
 
 (async () => {
-    const state = Tone.context.state
-    let engine = undefined;
-
-    if (state === "suspended") {
-        // engine = await createEngine()
-    }
-
     ReactDOM.render(
         <React.StrictMode>
-            {state}
-            <App engine={engine}/>
+            <App/>
+            <Footer/>
         </React.StrictMode>,
         document.getElementById('root')
     );

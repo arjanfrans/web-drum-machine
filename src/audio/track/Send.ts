@@ -9,10 +9,6 @@ export class Send {
         this.channel = new Tone.Channel({
             context: fromChannel.context,
         })
-        fromChannel.connect(this.channel)
-        this.channel.connect(this.toBus.channel)
-
-        this.disable()
     }
 
     set volume(value: number) {

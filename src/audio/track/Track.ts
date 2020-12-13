@@ -10,7 +10,6 @@ import { SequenceLoopInterface } from "../SequenceLoopInterface"
 
 export class Track implements DrawLoopInterface, SequenceLoopInterface {
     public readonly player: Tone.Player
-    private sequence?: Tone.Sequence
     public readonly emitter: TrackEmitter
     public readonly channel: Tone.Channel
     public readonly meter: Tone.Meter
@@ -33,8 +32,6 @@ export class Track implements DrawLoopInterface, SequenceLoopInterface {
         this.player.connect(this.channel)
         this.channel.toDestination()
         this.channel.connect(this.meter)
-
-        this.updateSequence()
     }
 
     set mute(value: boolean) {
@@ -73,21 +70,9 @@ export class Track implements DrawLoopInterface, SequenceLoopInterface {
         return send
     }
 
-    private updateSequence(): void {
-        this.sequence = new Tone.Sequence(
-            (time, index) => {
-                if (this.sequenceNotes[index]) {
-                    this.player.start(time, 0)
-                }
-            },
-            Array.from(this.sequenceNotes.keys()),
-            "8n"
-        ).start()
-    }
-
     public sequenceUpdate(time: number, index: number) {
         if (this.sequenceNotes[index]) {
-            this.player.start(time, 0)
+            this.player.start(time)
         }
     }
 
