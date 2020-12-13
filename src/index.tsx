@@ -1,77 +1,25 @@
+import {log} from "./util/console"
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {TransportView} from "./ui/audio/TransportView";
 import {AudioEngine} from "./audio/AudioEngine";
 import {CONFIG} from "./config";
-import {Mixer} from "./ui/audio/Mixer";
+import {DrumMachine} from "./ui/DrumMachine";
+import {Footer} from "./ui/Footer";
 
-const version = process.env.REACT_APP_VERSION
+log(`Starting app: ${process.env.REACT_APP_NAME}`);
 
-if (process.env.NODE_ENV === "production") {
-    const noop = () => undefined;
+(async () => {
+    const engine = new AudioEngine(CONFIG);
 
-    console.log = noop;
-    console.debug = noop;
-}
+    await engine.init();
 
-interface JukeboxState {
-    engine?: AudioEngine
-}
-
-export class Jukebox extends React.Component<{}, JukeboxState> {
-    constructor(props: {}) {
-        super(props);
-
-        this.state = {
-            engine: undefined
-        }
-    }
-
-    private async startEngine()
-    {
-        const engine = new AudioEngine(CONFIG);
-        await engine.init();
-
-        this.setState({
-            engine
-        })
-    }
-
-    private renderStart(): React.ReactNode
-    {
-        return <div>
-           <button onClick={() => this.startEngine()}>Start making music!</button>
-        </div>
-    }
-
-    public render(): React.ReactNode {
-        if (!this.state.engine) {
-            return this.renderStart();
-        }
-
-        return <>
-            <TransportView
-                sendBuses={[...this.state.engine.buses.keys()]}
-                transport={this.state.engine.transport}
-                tracks={[...this.state.engine.tracks.values()]}
-                masterTrack={this.state.engine.masterTrack}
-            />
-            <Mixer
-                buses={[...this.state.engine.buses.values()]}
-                tracks={[...this.state.engine.tracks.values()]}
-                audioEngine={this.state.engine}
-            />
-        </>
-    }
-}
-
-ReactDOM.render(
-    <React.StrictMode>
-        <Jukebox/>
-        <hr/>
-        &copy; Arjan Frans 2020 | <a target="_blank" rel="noopener noreferrer" href="https://github.com/arjanfrans/web-drum-machine">Source Code</a> | Version: {version}
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+    ReactDOM.render(
+        <React.StrictMode>
+            <DrumMachine engine={engine}/>
+            <Footer/>
+        </React.StrictMode>,
+        document.getElementById('root')
+    );
+})()
 

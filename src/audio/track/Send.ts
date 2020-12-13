@@ -1,40 +1,45 @@
-import * as Tone from "tone";
-import { Bus } from "../bus/Bus";
+import * as Tone from "tone"
+import { Bus } from "../bus/Bus"
 
 export class Send {
-    public readonly channel: Tone.Channel;
-    private enabled: boolean = false;
+    public readonly channel: Tone.Channel
+    private enabled: boolean = false
 
-    constructor(private readonly fromChannel: Tone.Channel, toBus: Bus) {
+    constructor(private readonly fromChannel: Tone.Channel, private readonly toBus: Bus) {
         this.channel = new Tone.Channel({
             context: fromChannel.context,
-        });
-        fromChannel.connect(this.channel);
-        this.channel.connect(toBus.channel);
+        })
+        fromChannel.connect(this.channel)
+        this.channel.connect(this.toBus.channel)
 
-        this.disable();
-        this.channel.volume.value = 0;
+        this.disable()
     }
 
     set volume(value: number) {
-        this.channel.volume.value = Math.round(value);
+        value = Math.round(value)
+
+        this.channel.volume.value = value
     }
 
     get volume(): number {
-        return Math.round(this.channel.volume.value);
+        return this.channel.volume.value
     }
 
     public isEnabled(): boolean {
-        return this.enabled;
+        return this.enabled
     }
 
     public enable(): void {
-        this.enabled = true;
-        this.channel.mute = false;
+        this.enabled = true
+
+        this.fromChannel.connect(this.channel)
+        this.channel.connect(this.toBus.channel)
     }
 
     public disable(): void {
-        this.enabled = false;
-        this.channel.mute = true;
+        this.enabled = false
+
+        this.fromChannel.disconnect(this.channel)
+        this.channel.disconnect(this.toBus.channel)
     }
 }

@@ -1,62 +1,53 @@
-import { TransportPositionUpdatedEvent } from "./events/TransportPositionUpdatedEvent";
-import * as Tone from "tone";
-import { Config } from "../Config";
-import { ArrayHelper } from "../../util/ArrayHelper";
-import { TransportEmitter } from "./TransportEmitter";
-import { TransportStatusEnum } from "./TransportStatusEnum";
+import { TransportPositionUpdatedEvent } from "./events/TransportPositionUpdatedEvent"
+import * as Tone from "tone"
+import { Config } from "../Config"
+import { TransportEmitter } from "./TransportEmitter"
+import { TransportStatusEnum } from "./TransportStatusEnum"
+import { SequenceLoopInterface } from "../SequenceLoopInterface"
+import { SequenceDrawLoopInterface } from "../SequenceDrawLoopInterface"
 
-export class Transport {
-    public readonly emitter: TransportEmitter;
-    private transportPosition: number = 0;
-    public transportStatus: TransportStatusEnum = TransportStatusEnum.Stopped;
-    private sequenceSteps: number = 16;
-    private outputBuffer?: Tone.ToneAudioBuffer;
+export class Transport implements SequenceLoopInterface, SequenceDrawLoopInterface {
+    public readonly emitter: TransportEmitter
+    private transportPosition: number = 0
+    public transportStatus: TransportStatusEnum = TransportStatusEnum.Stopped
+    private sequenceSteps: number = 16
 
     constructor(config: Config) {
-        this.sequenceSteps = config.sequenceSteps;
+        this.sequenceSteps = config.sequenceSteps
 
-        this.emitter = new TransportEmitter(this);
+        this.emitter = new TransportEmitter(this)
+        Tone.Transport.loopStart = 0
+        Tone.Transport.loopEnd = "2m"
+        Tone.Transport.loop = true
     }
 
     public get bpm(): number {
-        return Math.round(Tone.Transport.bpm.value);
+        return Math.round(Tone.Transport.bpm.value)
     }
 
     public stop(): void {
-        Tone.Transport.stop();
+        Tone.Transport.stop()
     }
 
     public start(): void {
-        Tone.Transport.start();
+        Tone.Transport.start()
     }
 
     public pause(): void {
-        Tone.Transport.pause();
+        Tone.Transport.pause()
     }
 
     public set bpm(value: number) {
-        Tone.Transport.bpm.value = value;
+        Tone.Transport.bpm.value = value
     }
 
-    public async init() {
-        this.outputBuffer = await Tone.Offline(({ transport }) => {
-            transport.loopStart = 0;
-            transport.loopEnd = "2m";
-            transport.loop = true;
+    public sequenceUpdate(time: number, index: number) {
+        this.transportPosition = index
+    }
 
-            new Tone.Sequence(
-                (time, index) => {
-                    this.transportPosition = index;
-
-                    Tone.Draw.schedule(() => {
-                        if (this.transportStatus === TransportStatusEnum.Started) {
-                            this.emitter.emit(new TransportPositionUpdatedEvent(index));
-                        }
-                    }, time);
-                },
-                ArrayHelper.indexes(this.sequenceSteps),
-                "8n"
-            ).start(0);
-        }, 4);
+    public sequenceDraw(time: number, index: number) {
+        if (this.transportStatus === TransportStatusEnum.Started) {
+            this.emitter.emit(new TransportPositionUpdatedEvent(index))
+        }
     }
 }

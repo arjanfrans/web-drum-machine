@@ -1,3 +1,3 @@
 export class StopTransportEvent {
-    public static Name: string = "StopTransportEvent";
+    public static Name: string = "StopTransportEvent"
 }

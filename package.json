@@ -26,7 +26,7 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && gh-pages -f -d build",
     "cs-fix": "eslint src --ext ts,tsx",
-    "cs-format": "prettier  'src/**/*.ts' --write --tab-width 4 --print-width=120",
+    "cs-format": "prettier  'src/**/*.ts' --write --no-semi --tab-width 4 --print-width=120",
     "cs": "npm run cs-format && npm run cs-fix"
   },
   "eslintConfig": {
