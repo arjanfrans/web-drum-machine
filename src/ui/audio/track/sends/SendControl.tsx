@@ -23,6 +23,7 @@ export class SendControl extends React.Component<SendControlProps, SendControlSt
     constructor(props: SendControlProps) {
         super(props);
 
+        console.log(props.send.volume)
         this.state = {
             volume: props.send.volume,
             enabled: props.send.isEnabled(),

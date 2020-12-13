@@ -5,15 +5,15 @@ import {PauseTransportEvent} from "../../audio/transport/events/PauseTransportEv
 import {Transport} from "../../audio/transport/Transport"
 import {UpdateBpmTransportEvent} from "../../audio/transport/events/UpdateBpmTransportEvent";
 import styles from "./TransportControlView.module.css"
-import {PlayButton, PauseButton, StopButton } from "../component/buttons";
+import {PauseButton, PlayButton, StopButton} from "../component/buttons";
 import {BpmInput} from "../component/inputs";
-import {AudioEngine} from "../../audio/AudioEngine";
 import {Meter} from "./meters/Meter";
 import {MasterOutputVolumeUpdatedEvent} from "../../audio/events/MasterOutputVolumeUpdatedEvent";
+import {MasterTrack} from "../../audio/track/MasterTrack";
 
 interface TransportControlViewProps {
     transport: Transport
-    audioEngine: AudioEngine
+    masterTrack: MasterTrack
 }
 
 interface TransportControlViewState {
@@ -83,7 +83,7 @@ export class TransportControlView extends React.Component<TransportControlViewPr
     }
 
     private meterListener = (updateValue: (values: number[]) => void): void => {
-        this.props.audioEngine.emitter.on(MasterOutputVolumeUpdatedEvent, (event: MasterOutputVolumeUpdatedEvent) => {
+        this.props.masterTrack.emitter.on(MasterOutputVolumeUpdatedEvent, (event: MasterOutputVolumeUpdatedEvent) => {
             updateValue([event.leftVolume, event.rightVolume])
         });
     }

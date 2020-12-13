@@ -13,14 +13,15 @@ export class Send {
         this.channel.connect(toBus.channel);
 
         this.disable();
+        this.channel.volume.value = 0;
     }
 
     set volume(value: number) {
-        this.channel.volume.value = value;
+        this.channel.volume.value = Math.round(value);
     }
 
     get volume(): number {
-        return this.channel.volume.value;
+        return Math.round(this.channel.volume.value);
     }
 
     public isEnabled(): boolean {

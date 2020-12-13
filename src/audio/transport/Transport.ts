@@ -10,6 +10,7 @@ export class Transport {
     private transportPosition: number = 0;
     public transportStatus: TransportStatusEnum = TransportStatusEnum.Stopped;
     private sequenceSteps: number = 16;
+    private outputBuffer?: Tone.ToneAudioBuffer;
 
     constructor(config: Config) {
         this.sequenceSteps = config.sequenceSteps;
@@ -38,8 +39,7 @@ export class Transport {
     }
 
     public async init() {
-        const buffer = await Tone.Offline(({ transport }) => {
-            transport.bpm.value = 96;
+        this.outputBuffer = await Tone.Offline(({ transport }) => {
             transport.loopStart = 0;
             transport.loopEnd = "2m";
             transport.loop = true;
@@ -58,7 +58,5 @@ export class Transport {
                 "8n"
             ).start(0);
         }, 4);
-
-        console.log(buffer);
     }
 }

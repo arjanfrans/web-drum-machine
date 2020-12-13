@@ -3,6 +3,7 @@ import { EffectsRack } from "../EffectsRack";
 import { TrackEmitter } from "./TrackEmitter";
 import { Bus } from "../bus/Bus";
 import { Send } from "./Send";
+import { TrackOutputVolumeUpdatedEvent } from "./events/TrackOutputVolumeUpdatedEvent";
 
 export class Track {
     public readonly player: Tone.Player;
@@ -79,5 +80,15 @@ export class Track {
             Array.from(this.sequenceNotes.keys()),
             "8n"
         ).start();
+    }
+
+    public draw(): void {
+        const value = this.meter.getValue();
+
+        if (Array.isArray(value)) {
+            this.emitter.emit(new TrackOutputVolumeUpdatedEvent(value[0], value[1]));
+        } else {
+            this.emitter.emit(new TrackOutputVolumeUpdatedEvent(value, value));
+        }
     }
 }
