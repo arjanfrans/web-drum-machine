@@ -69,6 +69,8 @@ export class AudioEngine {
             if (this.transport.transportStatus === TransportStatusEnum.Started) {
                 this.transport.stop()
                 startAgain = true
+            } else if (this.transport.transportStatus === TransportStatusEnum.Paused) {
+                this.transport.stop()
             }
 
             this.sequenceLoop?.dispose()
