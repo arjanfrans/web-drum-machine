@@ -6,7 +6,7 @@ using [Tone.js](https://github.com/Tonejs/Tone.js/) Web Audio framework.
 ## Demo
 Try it out: [web-drum-machine.arjanfrans.com](https://web-drum-machine.arjanfrans.com/)
 
-![Version 0.0.1-dev.11](./.github/media/version_0.0.1-dev.11.png)
+![Version 0.0.1](./.github/media/version_0.0.1.png)
 
 
 ### Development
