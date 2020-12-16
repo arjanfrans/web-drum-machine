@@ -1,24 +1,25 @@
 import { TransportPositionUpdatedEvent } from "./events/TransportPositionUpdatedEvent"
 import * as Tone from "tone"
-import { Config } from "../Config"
 import { TransportEmitter } from "./TransportEmitter"
 import { TransportStatusEnum } from "./TransportStatusEnum"
 import { SequenceLoopInterface } from "../SequenceLoopInterface"
 import { SequenceDrawLoopInterface } from "../SequenceDrawLoopInterface"
+import { Sequencer } from "../sequencer/Sequencer"
 
 export class Transport implements SequenceLoopInterface, SequenceDrawLoopInterface {
     public readonly emitter: TransportEmitter
     private transportPosition: number = 0
     public transportStatus: TransportStatusEnum = TransportStatusEnum.Stopped
-    private sequenceSteps: number = 16
 
-    constructor(config: Config) {
-        this.sequenceSteps = config.sequenceSteps
-
+    constructor() {
         this.emitter = new TransportEmitter(this)
         Tone.Transport.loopStart = 0
-        Tone.Transport.loopEnd = "2m"
         Tone.Transport.loop = true
+    }
+
+    set steps(value: number) {
+        const loopEnd = value / 8
+        Tone.Transport.loopEnd = `${loopEnd}m`
     }
 
     public get bpm(): number {
@@ -43,6 +44,10 @@ export class Transport implements SequenceLoopInterface, SequenceDrawLoopInterfa
 
     public sequenceUpdate(time: number, index: number) {
         this.transportPosition = index
+    }
+
+    public shouldUpdate(index: number, sequencer: Sequencer): boolean {
+        return this.transportStatus === TransportStatusEnum.Started
     }
 
     public sequenceDraw(time: number, index: number) {

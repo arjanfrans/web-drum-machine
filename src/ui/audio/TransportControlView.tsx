@@ -10,9 +10,12 @@ import {BpmInput} from "../component/inputs";
 import {Meter} from "./meters/Meter";
 import {MasterOutputVolumeUpdatedEvent} from "../../audio/events/MasterOutputVolumeUpdatedEvent";
 import {MasterTrack} from "../../audio/track/MasterTrack";
+import {Sequencer} from "../../audio/sequencer/Sequencer";
+import {UpdateSequencerStepsEvent} from "../../audio/sequencer/events/UpdateSequencerStepsEvent";
 
 interface TransportControlViewProps {
     transport: Transport
+    sequencer: Sequencer
     masterTrack: MasterTrack
 }
 
@@ -21,6 +24,7 @@ interface TransportControlViewState {
     enablePause: boolean
     enableStop: boolean
     bpm: number
+    steps: number
 }
 
 export class TransportControlView extends React.Component<TransportControlViewProps, TransportControlViewState> {
@@ -31,7 +35,8 @@ export class TransportControlView extends React.Component<TransportControlViewPr
             enableStart: true,
             enablePause: false,
             enableStop: false,
-            bpm: props.transport.bpm
+            bpm: props.transport.bpm,
+            steps: props.sequencer.steps
         }
     }
 
@@ -88,13 +93,24 @@ export class TransportControlView extends React.Component<TransportControlViewPr
         });
     }
 
+    private updateSteps(steps: number): void {
+        this.props.sequencer.emitter.emit(new UpdateSequencerStepsEvent(steps));
+
+        this.setState({
+            steps
+        })
+    }
+
     public render() {
         return (
             <div className={styles.container}>
                 <div>
-                    <PlayButton className={styles.item} disabled={!this.state.enableStart} onClick={() => this.handleStartClick()} />
-                    <PauseButton className={styles.item} disabled={!this.state.enablePause} onClick={() => this.handlePauseClick()} />
-                    <StopButton className={styles.item} disabled={!this.state.enableStop} onClick={() => this.handleStopClick()} />
+                    <PlayButton className={styles.item} disabled={!this.state.enableStart}
+                                onClick={() => this.handleStartClick()}/>
+                    <PauseButton className={styles.item} disabled={!this.state.enablePause}
+                                 onClick={() => this.handlePauseClick()}/>
+                    <StopButton className={styles.item} disabled={!this.state.enableStop}
+                                onClick={() => this.handleStopClick()}/>
                 </div>
                 <div>
                     <Meter
@@ -113,6 +129,15 @@ export class TransportControlView extends React.Component<TransportControlViewPr
                         onBlur={this.commitBpmChange.bind(this)}
                         onMouseUp={this.commitBpmChange.bind(this)}
                     />
+                </div>
+                <div>
+                    Steps:
+                    <select
+                        value={this.state.steps}
+                        onChange={(event) => this.updateSteps(Number.parseInt(event.currentTarget.value))}
+                    >
+                        {[8, 16, 32, 64].map(v => <option key={v} value={v}>{v}</option>)}
+                    </select>
                 </div>
             </div>
         )

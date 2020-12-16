@@ -7,6 +7,7 @@ import { TrackOutputVolumeUpdatedEvent } from "./events/TrackOutputVolumeUpdated
 import { Settings } from "../Settings"
 import { DrawLoopInterface } from "../DrawLoopInterface"
 import { SequenceLoopInterface } from "../SequenceLoopInterface"
+import { Sequencer } from "../sequencer/Sequencer"
 
 export class Track implements DrawLoopInterface, SequenceLoopInterface {
     public readonly player: Tone.Player
@@ -20,7 +21,6 @@ export class Track implements DrawLoopInterface, SequenceLoopInterface {
         public readonly id: string,
         public name: string,
         private sample: string,
-        public readonly sequenceNotes: boolean[],
         private readonly buses: Map<string, Bus>
     ) {
         this.emitter = new TrackEmitter(this)
@@ -71,9 +71,13 @@ export class Track implements DrawLoopInterface, SequenceLoopInterface {
     }
 
     public sequenceUpdate(time: number, index: number) {
-        if (this.sequenceNotes[index]) {
-            this.player.start(time)
-        }
+        this.player.start(time)
+    }
+
+    public shouldUpdate(index: number, sequencer: Sequencer): boolean {
+        const pattern = sequencer.getCurrentPattern()
+
+        return pattern.isCellActive(this.id, index)
     }
 
     public draw(): void {

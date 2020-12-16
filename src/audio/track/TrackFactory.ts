@@ -3,14 +3,8 @@ import * as Tone from "tone"
 import { Bus } from "../bus/Bus"
 
 export class TrackFactory {
-    public static createTrack(
-        id: string,
-        name: string,
-        sample: string,
-        sequenceNotes: boolean[],
-        buses: Map<string, Bus>
-    ): Track {
-        const track = new Track(id, name, sample, sequenceNotes, buses)
+    public static createTrack(id: string, name: string, sample: string, buses: Map<string, Bus>): Track {
+        const track = new Track(id, name, sample, buses)
 
         const autoWah = new Tone.AutoWah(50, 6, -30)
 

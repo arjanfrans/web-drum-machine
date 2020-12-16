@@ -15,6 +15,7 @@ export class DrumMachine extends React.Component<DrumMachineProps, {}> {
                 transport={this.props.engine.transport}
                 tracks={[...this.props.engine.tracks.values()]}
                 masterTrack={this.props.engine.masterTrack}
+                sequencer={this.props.engine.sequencer}
             />
             <Mixer
                 buses={[...this.props.engine.buses.values()]}

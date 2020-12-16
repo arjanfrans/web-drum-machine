@@ -2,11 +2,16 @@ export interface TrackData {
     id: string
     name: string
     sample: string
-    sequenceNotes: boolean[]
+}
+
+export interface SequencerPreset {
+    id: string
+    steps: number
+    subdivision: number
+    tracks: Array<{ id: string; data: boolean[] }>
 }
 
 export interface Config {
-    sequenceSteps: number
-    noteSubdivision: string
+    sequencerPreset: SequencerPreset
     trackData: TrackData[]
 }

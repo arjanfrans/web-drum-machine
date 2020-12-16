@@ -1,7 +1,5 @@
 import { Track } from "./Track"
 import { EventEmitter } from "../../events/EventEmitter"
-import { SetTrackNoteEvent } from "./events/SetTrackNoteEvent"
-import { TrackEvent } from "./events/TrackEvent"
 import { UpdateChannelVolumeEvent } from "./events/UpdateChannelVolumeEvent"
 import { UpdateChannelPanningEvent } from "./events/UpdatePanningVolumeEvent"
 import { SoloChannelEvent } from "./events/SoloChannelEvent"
@@ -15,12 +13,6 @@ export class TrackEmitter extends EventEmitter {
     constructor(private readonly track: Track) {
         super()
 
-        this.on(SetTrackNoteEvent, (event: SetTrackNoteEvent) => {
-            track.sequenceNotes[event.index] = event.isActive
-
-            this.emit(new TrackEvent(this.track))
-        })
-
         this.on(UpdateChannelVolumeEvent, (event: UpdateChannelVolumeEvent) => {
             track.channel.volume.value = event.volume
         })
@@ -31,14 +23,10 @@ export class TrackEmitter extends EventEmitter {
 
         this.on(SoloChannelEvent, (event: SoloChannelEvent) => {
             track.solo = event.solo
-
-            this.emit(new TrackEvent(this.track))
         })
 
         this.on(MuteChannelEvent, (event: MuteChannelEvent) => {
             track.mute = event.mute
-
-            this.emit(new TrackEvent(this.track))
         })
 
         this.on(EnableTrackEffectEvent, (event: EnableTrackEffectEvent) => {
