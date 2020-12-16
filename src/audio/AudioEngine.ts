@@ -124,7 +124,6 @@ export class AudioEngine {
     }
 
     private startSequenceLoop(): void {
-        console.log(this.sequencer.steps, this.sequencer.subdivision)
         this.sequenceLoop = new Tone.Sequence(
             (time, index) => {
                 for (const sequenceUpdate of this.getSequenceUpdates()) {

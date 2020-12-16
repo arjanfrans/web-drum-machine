@@ -1,5 +1,8 @@
 # Web Drum Machine
 
+A web drum machine that runs in the browser. Written in Typescript
+using [Tone.js](https://github.com/Tonejs/Tone.js/) Web Audio framework.
+
 ## Demo
 Try it out: [web-drum-machine.arjanfrans.com](https://web-drum-machine.arjanfrans.com/)
 
@@ -22,7 +25,7 @@ Tools:
 ### Features
 * Adjustable BPM
 * Transport controls
-* 16 note step sequencer
+* Step sequencer with adjustable steps
 * Channel effects
 * Effect bus sends
 * Panning/volume/mute/solo channel control

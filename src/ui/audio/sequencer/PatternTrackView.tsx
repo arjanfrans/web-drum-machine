@@ -22,12 +22,12 @@ export class PatternTrackView extends React.Component<PatternTrackViewProps, {}>
         })
 
         return (
-            <>
+            <div className={styles.container}>
                 <TrackLabel name={this.props.name}/>
-                <div className={styles.container} style={{'gridTemplateColumns': `repeat(${cells.length}, 1fr)`}}>
+                <div className={styles.cells} style={{'gridTemplateColumns': `repeat(${cells.length}, 1fr)`}}>
                     {cells}
                 </div>
-            </>
+            </div>
         )
     }
 }

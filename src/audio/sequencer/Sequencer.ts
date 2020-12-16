@@ -37,8 +37,6 @@ export class Sequencer {
                 pattern.setCell(track.id, index, value)
             }
         }
-
-        console.log(pattern)
     }
 
     public clear(): void {

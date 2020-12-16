@@ -48,7 +48,7 @@ const SEQUENCER_PRESET_1 = {
             ],
         },
         {
-            id: "hh",
+            id: "hihat",
             data: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
         },
         {
@@ -89,7 +89,7 @@ export const CONFIG: Config = {
             sample: "assets/snare.wav",
         },
         {
-            id: "hh",
+            id: "hihat",
             name: "HiHat",
             sample: "assets/hihat.wav",
         },

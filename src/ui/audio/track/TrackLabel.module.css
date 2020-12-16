@@ -3,5 +3,7 @@
     border: 1px solid black;
     display: inline-block;
     text-align: center;
-    background-color: lightgrey
+    background-color: lightgrey;
+    margin-right: 2px;
+    word-wrap: break-word;
 }
