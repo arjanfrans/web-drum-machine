@@ -8,14 +8,14 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.19.8",
+    "@types/node": "^12.19.9",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "events": "^3.2.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-scripts": "3.4.3",
-    "tone": "^14.7.73",
+    "tone": "^14.7.74",
     "typescript": "^3.9.7"
   },
   "scripts": {
@@ -26,7 +26,7 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && gh-pages -f -d build",
     "cs-fix": "eslint src --ext ts,tsx",
-    "cs-format": "prettier  'src/**/*.ts' --write --no-semi --tab-width 4 --print-width=120",
+    "cs-format": "prettier 'src/**/*.ts' --write --no-semi --tab-width 4 --print-width=120",
     "cs": "npm run cs-format && npm run cs-fix"
   },
   "eslintConfig": {
